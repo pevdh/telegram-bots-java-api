@@ -13,95 +13,61 @@ import java.util.Map;
  */
 public class SendVideoRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private File videoFile;
-    private String videoString;
+    private Map<String, String> args = new HashMap<>();
+    private RequestStrategy requestStrategy;
 
-    private int duration;
-    private String caption;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
+    public SendVideoRequest(int chatId, File video) {
+        this(chatId, video, null);
+    }
 
-    private SendVideoRequest(Builder builder) {
-        chatId = builder.chatId;
-        videoFile = builder.videoFile;
-        videoString = builder.videoString;
-        duration = builder.duration;
-        caption = builder.caption;
-        replyToMessageId = builder.replyToMessageId;
-        replyMarkup = builder.replyMarkup;
+    public SendVideoRequest(int chatId, File video, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new MultipartStrategy(video, "video");
+    }
+
+    public SendVideoRequest(int chatId, String video) {
+        this(chatId, video, null);
+    }
+
+    public SendVideoRequest(int chatId, String video, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+        args.put("video", video);
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new PostStrategy();
     }
 
     @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("chat_id", String.valueOf(chatId));
-
-        if (duration != -1)
-            args.put("duration", String.valueOf(duration));
-
-        if (caption != null)
-            args.put("caption", caption);
-
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response;
-        if (videoFile != null) {
-            response = api.makeMultipartRequest("sendVideo", args, "video", videoFile);
-        } else {
-            args.put("video", videoString);
-            response = api.makePostRequest("sendVideo", args);
-        }
-        return deserialize(response, ResultTypes.MESSAGE);
+    protected String getMethodName() {
+        return "sendVideo";
     }
 
-    public static class Builder {
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
 
-        private int chatId;
-        private File videoFile;
-        private String videoString;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        private int duration = -1;
-        private String caption = null;
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return requestStrategy;
+    }
 
-        public Builder(int chatId, File video) {
-            this.chatId = chatId;
-            this.videoFile = video;
-        }
-
-        public Builder(int chatId, String video) {
-            this.chatId = chatId;
-            this.videoString = video;
-        }
-
-        public Builder setDuration(int duration) {
-            this.duration = duration;
-            return this;
-        }
-
-        public Builder setCaption(String caption) {
-            this.caption = caption;
-            return this;
-        }
-
-        public Builder setReplyToMessageId(int replyToMessageId) {
-            this.replyToMessageId = replyToMessageId;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup replyMarkup) {
-            this.replyMarkup = replyMarkup;
-            return this;
-        }
-
-        public SendVideoRequest build() {
-            return new SendVideoRequest(this);
-        }
+    @Override
+    public String toString() {
+        return "SendVideoRequest{" +
+                "args=" + args +
+                ", requestStrategy=" + requestStrategy +
+                '}';
     }
 }

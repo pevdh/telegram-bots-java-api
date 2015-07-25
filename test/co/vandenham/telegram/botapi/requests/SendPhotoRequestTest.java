@@ -17,8 +17,9 @@ public class SendPhotoRequestTest extends RequestTest {
     public void testMakeRequest() throws Exception {
         File photo = new File("/home/pieter/Pictures/infoweb.png");
 
-        SendPhotoRequest request = new SendPhotoRequest.Builder(4663724, photo).setCaption("Lol...").build();
-        ApiResult<Message> result = request.makeRequest(api);
-        assertTrue(result.isOk());
+        OptionalArgs optionalArgs = new OptionalArgs().caption("Lol...");
+        SendPhotoRequest request = new SendPhotoRequest(4663724, photo, optionalArgs);
+        Message message = request.execute(api);
+        assertTrue(message.getMessageId() > 0);
     }
 }

@@ -13,85 +13,61 @@ import java.util.Map;
  */
 public class SendAudioRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private File audioFile;
-    private String audioString;
+    private Map<String, String> args = new HashMap<>();
+    private RequestStrategy requestStrategy;
 
-    private int duration;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
+    public SendAudioRequest(int chatId, File audioFile) {
+        this(chatId, audioFile, null);
+    }
 
-    private SendAudioRequest(Builder builder) {
-        chatId = builder.chatId;
-        audioFile = builder.audioFile;
-        audioString = builder.audioString;
-        duration = builder.duration;
-        replyToMessageId = builder.replyToMessageId;
-        replyMarkup = builder.replyMarkup;
+    public SendAudioRequest(int chatId, File audioFile, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new MultipartStrategy(audioFile, "audio");
+    }
+
+    public SendAudioRequest(int chatId, String audioString) {
+        this(chatId, audioString, null);
+    }
+
+    public SendAudioRequest(int chatId, String audioString, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+        args.put("audio", audioString);
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new PostStrategy();
     }
 
     @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("chat_id", String.valueOf(chatId));
-
-        if (duration != -1)
-            args.put("duration", String.valueOf(duration));
-
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response;
-        if (audioFile != null) {
-            response = api.makeMultipartRequest("sendAudio", args, "audio", audioFile);
-        } else {
-            args.put("audio", audioString);
-            response = api.makePostRequest("sendAudio", args);
-        }
-        return deserialize(response, ResultTypes.MESSAGE);
+    protected String getMethodName() {
+        return "sendAudio";
     }
 
-    public static class Builder {
-
-        private int chatId;
-        private File audioFile;
-        private String audioString;
-
-        private int duration = -1;
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
-
-        public Builder(int chatId, File audio) {
-            this.chatId = chatId;
-            this.audioFile = audio;
-        }
-
-        public Builder(int chatId, String audio) {
-            this.chatId = chatId;
-            this.audioString = audio;
-        }
-
-        public Builder setDuration(int duration) {
-            this.duration = duration;
-            return this;
-        }
-
-        public Builder setReplyToMessageId(int replyToMessageId) {
-            this.replyToMessageId = replyToMessageId;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup replyMarkup) {
-            this.replyMarkup = replyMarkup;
-            return this;
-        }
-
-        public SendAudioRequest build() {
-            return new SendAudioRequest(this);
-        }
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
     }
 
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
+
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return requestStrategy;
+    }
+
+    @Override
+    public String toString() {
+        return "SendAudioRequest{" +
+                "args=" + args +
+                ", requestStrategy=" + requestStrategy +
+                '}';
+    }
 }

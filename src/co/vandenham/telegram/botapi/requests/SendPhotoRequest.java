@@ -13,85 +13,61 @@ import java.util.Map;
  */
 public class SendPhotoRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private File photoFile;
-    private String photoString;
+    private Map<String, String> args = new HashMap<>();
+    private RequestStrategy requestStrategy;
 
-    private String caption;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
+    public SendPhotoRequest(int chatId, File photo) {
+        this(chatId, photo, null);
+    }
 
-    private SendPhotoRequest(Builder builder) {
-        this.chatId = builder.chatId;
-        this.photoFile = builder.photoFile;
-        this.photoString = builder.photoString;
-        this.caption = builder.caption;
-        this.replyToMessageId = builder.replyToMessageId;
-        this.replyMarkup = builder.replyMarkup;
+    public SendPhotoRequest(int chatId, File photo, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new MultipartStrategy(photo, "photo");
+    }
+
+    public SendPhotoRequest(int chatId, String photo) {
+        this(chatId, photo, null);
+    }
+
+    public SendPhotoRequest(int chatId, String photo, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+        args.put("photo", photo);
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new PostStrategy();
     }
 
     @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("chat_id", String.valueOf(chatId));
-
-        if (caption != null)
-            args.put("caption", caption);
-
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response;
-        if (photoFile != null) {
-            response = api.makeMultipartRequest("sendPhoto", args, "photo", photoFile);
-        } else {
-            args.put("photo", photoString);
-            response = api.makePostRequest("sendPhoto", args);
-        }
-        return deserialize(response, ResultTypes.MESSAGE);
+    protected String getMethodName() {
+        return "sendPhoto";
     }
 
-    public static class Builder {
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
 
-        private int chatId;
-        private File photoFile;
-        private String photoString;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        private String caption = null;
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return requestStrategy;
+    }
 
-        public Builder(int chatId, File photo) {
-            this.chatId = chatId;
-            this.photoFile = photo;
-        }
-
-        public Builder(int chatId, String photo) {
-            this.photoString = photo;
-            this.chatId = chatId;
-        }
-
-        public Builder setCaption(String caption) {
-            this.caption = caption;
-            return this;
-        }
-
-        public Builder setReplyToMessageId(int replyToMessageId) {
-            this.replyToMessageId = replyToMessageId;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup replyMarkup) {
-            this.replyMarkup = replyMarkup;
-            return this;
-        }
-
-        public SendPhotoRequest build() {
-            return new SendPhotoRequest(this);
-        }
-
+    @Override
+    public String toString() {
+        return "SendPhotoRequest{" +
+                "args=" + args +
+                ", requestStrategy=" + requestStrategy +
+                '}';
     }
 }

@@ -11,25 +11,38 @@ import java.util.Map;
  */
 public class ForwardMessageRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private int fromChatId;
-    private int messageId;
+    private Map<String, String> args = new HashMap<>();
 
     public ForwardMessageRequest(int chatId, int fromChatId, int messageId) {
-        this.chatId = chatId;
-        this.fromChatId = fromChatId;
-        this.messageId = messageId;
-    }
-
-    @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
         args.put("chat_id", String.valueOf(chatId));
         args.put("from_chat_id", String.valueOf(fromChatId));
         args.put("message_id", String.valueOf(messageId));
+    }
 
-        String response = api.makePostRequest("forwardMessage", args);
+    @Override
+    public String toString() {
+        return "ForwardMessageRequest{" +
+                "args=" + args +
+                '}';
+    }
 
-        return deserialize(response, ResultTypes.MESSAGE);
+    @Override
+    protected String getMethodName() {
+        return "forwardMessage";
+    }
+
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
+
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
+
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
     }
 }

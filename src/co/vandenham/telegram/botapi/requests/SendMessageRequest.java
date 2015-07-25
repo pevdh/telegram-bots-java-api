@@ -12,73 +12,44 @@ import java.util.Map;
  */
 public final class SendMessageRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private String text;
+    private Map<String, String> args = new HashMap<>();
 
-    private boolean disableWebPagePreview;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
-
-    private SendMessageRequest(Builder builder) {
-        chatId = builder.chatId;
-        text = builder.text;
-
-        disableWebPagePreview = builder.disableWebPagePreview;
-        replyToMessageId = builder.replyToMessageId;
-        replyMarkup = builder.replyMarkup;
+    public SendMessageRequest(int chatId, String text) {
+        this(chatId, text, null);
     }
 
-    @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
+    public SendMessageRequest(int chatId, String text, OptionalArgs optionalArgs) {
         args.put("chat_id", String.valueOf(chatId));
         args.put("text", text);
 
-        if (disableWebPagePreview)
-            args.put("disable_web_page_preview", String.valueOf(disableWebPagePreview));
-
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response = api.makePostRequest("sendMessage", args);
-        return deserialize(response, ResultTypes.MESSAGE);
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
     }
 
-    public static class Builder {
+    @Override
+    protected String getMethodName() {
+        return "sendMessage";
+    }
 
-        private int chatId;
-        private String text;
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
 
-        private boolean disableWebPagePreview = false;
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        public Builder(int chatId, String text) {
-            this.chatId = chatId;
-            this.text = text;
-        }
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
+    }
 
-        public Builder disableWebPagePreview() {
-            this.disableWebPagePreview = true;
-            return this;
-        }
-
-        public Builder setReplyToMessageId(int id) {
-            this.replyToMessageId = id;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup markup) {
-            this.replyMarkup = markup;
-            return this;
-        }
-
-        public SendMessageRequest build() {
-            return new SendMessageRequest(this);
-        }
-
+    @Override
+    public String toString() {
+        return "SendMessageRequest{" +
+                "args=" + args +
+                '}';
     }
 }

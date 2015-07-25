@@ -11,53 +11,43 @@ import java.util.Map;
  */
 public class GetUserProfilePhotosRequest extends ApiRequest<UserProfilePhotos> {
 
-    private int userId;
-    private int offset;
-    private int limit;
+    private Map<String, String> args = new HashMap<>();
 
-    private GetUserProfilePhotosRequest(Builder builder) {
-        userId = builder.userId;
-        offset = builder.offset;
-        limit = builder.limit;
+    public GetUserProfilePhotosRequest(int userId) {
+        this(userId, null);
+    }
+
+    public GetUserProfilePhotosRequest(int userId, OptionalArgs optionalArgs) {
+        args.put("user_id", String.valueOf(userId));
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
     }
 
     @Override
-    protected ApiResult<UserProfilePhotos> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("user_id", String.valueOf(userId));
-
-        if (offset != -1)
-            args.put("offset", String.valueOf(offset));
-
-        if (limit != -1)
-            args.put("limit", String.valueOf(limit));
-
-        String response = api.makePostRequest("getUserProfilePhotos", args);
-        return deserialize(response, ResultTypes.USER_PROFILE_PHOTOS);
+    protected String getMethodName() {
+        return "getUserProfilePhotos";
     }
 
-    public static class Builder {
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.USER_PROFILE_PHOTOS;
+    }
 
-        private int userId;
-        private int offset = -1;
-        private int limit = -1;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        public Builder(int userId) {
-            this.userId = userId;
-        }
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
+    }
 
-        public Builder setOffset(int offset) {
-            this.offset = offset;
-            return this;
-        }
-
-        public Builder setLimit(int limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public GetUserProfilePhotosRequest build() {
-            return new GetUserProfilePhotosRequest(this);
-        }
+    @Override
+    public String toString() {
+        return "GetUserProfilePhotosRequest{" +
+                "args=" + args +
+                '}';
     }
 }

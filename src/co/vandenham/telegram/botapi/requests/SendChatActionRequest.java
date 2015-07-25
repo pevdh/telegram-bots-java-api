@@ -10,21 +10,37 @@ import java.util.Map;
  */
 public class SendChatActionRequest extends ApiRequest<Boolean> {
 
-    private int chatId;
-    private ChatAction chatAction;
+    private Map<String, String> args = new HashMap<>();
 
     public SendChatActionRequest(int chatId, ChatAction chatAction) {
-        this.chatId = chatId;
-        this.chatAction = chatAction;
+        args.put("chat_id", String.valueOf(chatId));
+        args.put("action", chatAction.getAction());
     }
 
     @Override
-    protected ApiResult<Boolean> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("chat_id", String.valueOf(chatId));
-        args.put("action", chatAction.getAction());
+    protected String getMethodName() {
+        return "sendChatAction";
+    }
 
-        String response = api.makePostRequest("sendChatAction", args);
-        return deserialize(response, ResultTypes.BOOLEAN);
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.BOOLEAN;
+    }
+
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
+
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
+    }
+
+    @Override
+    public String toString() {
+        return "SendChatActionRequest{" +
+                "args=" + args +
+                '}';
     }
 }

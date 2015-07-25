@@ -13,72 +13,61 @@ import java.util.Map;
  */
 public class SendDocumentRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private File documentFile;
-    private String documentString;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
+    private Map<String, String> args = new HashMap<>();
+    private RequestStrategy requestStrategy;
 
-    private SendDocumentRequest(Builder builder) {
-        chatId = builder.chatId;
-        documentFile = builder.documentFile;
-        documentString = builder.documentString;
-        replyToMessageId = builder.replyToMessageId;
-        replyMarkup = builder.replyMarkup;
+    public SendDocumentRequest(int chatId, File document) {
+        this(chatId, document, null);
+    }
+
+    public SendDocumentRequest(int chatId, File document, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new MultipartStrategy(document, "document");
+    }
+
+    public SendDocumentRequest(int chatId, String document) {
+        this(chatId, document, null);
+    }
+
+    public SendDocumentRequest(int chatId, String document, OptionalArgs optionalArgs) {
+        args.put("chat_id", String.valueOf(chatId));
+        args.put("document", document);
+
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
+
+        requestStrategy = new PostStrategy();
     }
 
     @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-        args.put("chat_id", String.valueOf(chatId));
-
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response;
-        if (documentFile != null) {
-            response = api.makeMultipartRequest("sendDocument", args, "document", documentFile);
-        } else {
-            args.put("document", documentString);
-            response = api.makePostRequest("sendDocument", args);
-        }
-        return deserialize(response, ResultTypes.MESSAGE);
+    protected String getMethodName() {
+        return "sendDocument";
     }
 
-    public static class Builder {
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
 
-        private int chatId;
-        private File documentFile;
-        private String documentString;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return requestStrategy;
+    }
 
-        public Builder(int chatId, File document) {
-            this.chatId = chatId;
-            this.documentFile = document;
-        }
-
-        public Builder(int chatId, String document) {
-            this.chatId = chatId;
-            this.documentString = document;
-        }
-
-        public Builder setReplyToMessageId(int replyToMessageId) {
-            this.replyToMessageId = replyToMessageId;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup replyMarkup) {
-            this.replyMarkup = replyMarkup;
-            return this;
-        }
-
-        public SendDocumentRequest build() {
-            return new SendDocumentRequest(this);
-        }
+    @Override
+    public String toString() {
+        return "SendDocumentRequest{" +
+                "args=" + args +
+                ", requestStrategy=" + requestStrategy +
+                '}';
     }
 }

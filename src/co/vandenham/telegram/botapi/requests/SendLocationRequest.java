@@ -12,64 +12,45 @@ import java.util.Map;
  */
 public class SendLocationRequest extends ApiRequest<Message> {
 
-    private int chatId;
-    private float latitude;
-    private float longitude;
-    private int replyToMessageId;
-    private ReplyMarkup replyMarkup;
+    private Map<String, String> args = new HashMap<>();
 
-    private SendLocationRequest(Builder builder) {
-        chatId = builder.chatId;
-        latitude = builder.latitude;
-        longitude = builder.longitude;
-        replyToMessageId = builder.replyToMessageId;
-        replyMarkup = builder.replyMarkup;
+    public SendLocationRequest(int chatId, float latitude, float longitude) {
+        this(chatId, latitude, longitude, null);
     }
 
-    @Override
-    protected ApiResult<Message> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
+    public SendLocationRequest(int chatId, float latitude, float longitude, OptionalArgs optionalArgs) {
         args.put("chat_id", String.valueOf(chatId));
         args.put("latitude", String.valueOf(latitude));
         args.put("longitude", String.valueOf(longitude));
 
-        if (replyToMessageId != -1)
-            args.put("reply_to_message_id", String.valueOf(replyToMessageId));
-
-        if (replyMarkup != null)
-            args.put("reply_markup", replyMarkup.serialize());
-
-        String response = api.makePostRequest("sendLocation", args);
-        return deserialize(response, ResultTypes.MESSAGE);
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
     }
 
-    public static class Builder {
+    @Override
+    protected String getMethodName() {
+        return "sendLocation";
+    }
 
-        private int chatId;
-        private float latitude;
-        private float longitude;
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.MESSAGE;
+    }
 
-        private int replyToMessageId = -1;
-        private ReplyMarkup replyMarkup = null;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        public Builder(int chatId, float latitude, float longitude) {
-            this.chatId = chatId;
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
+    }
 
-        public Builder setReplyToMessageId(int replyToMessageId) {
-            this.replyToMessageId = replyToMessageId;
-            return this;
-        }
-
-        public Builder setReplyMarkup(ReplyMarkup replyMarkup) {
-            this.replyMarkup = replyMarkup;
-            return this;
-        }
-
-        public SendLocationRequest build() {
-            return new SendLocationRequest(this);
-        }
+    @Override
+    public String toString() {
+        return "SendLocationRequest{" +
+                "args=" + args +
+                '}';
     }
 }

@@ -35,6 +35,10 @@ public class Chat {
         return !isUser();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public User asUser() {
         User user = new User(id, firstName);
         user.setUsername(username);

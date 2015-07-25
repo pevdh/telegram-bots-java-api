@@ -6,66 +6,47 @@ import co.vandenham.telegram.botapi.types.Update;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Created by pieter on 25-7-15.
  */
 public class GetUpdatesRequest extends ApiRequest<List<Update>> {
 
-    private int offset;
-    private int limit;
-    private int timeout;
+    private Map<String, String> args = new HashMap<>();
 
-    private GetUpdatesRequest(Builder builder) {
-        offset = builder.offset;
-        limit = builder.limit;
-        timeout = builder.timeout;
+    public GetUpdatesRequest() {
+    }
+
+    public GetUpdatesRequest(OptionalArgs optionalArgs) {
+        if (optionalArgs != null)
+            copyMap(optionalArgs.getOptions(), args);
     }
 
     @Override
-    protected ApiResult<List<Update>> makeRequest(TelegramApi api) {
-        Map<String, String> args = new HashMap<>();
-
-        if (offset != -1)
-            args.put("offset", String.valueOf(offset));
-
-        if (limit != -1)
-            args.put("limit", String.valueOf(limit));
-
-        if (timeout != -1)
-            args.put("timeout", String.valueOf(timeout));
-
-        String response = api.makePostRequest("getUpdates", args);
-
-        return deserialize(response, ResultTypes.LIST_OF_UPDATES);
+    protected String getMethodName() {
+        return "getUpdates";
     }
 
-    public static class Builder {
+    @Override
+    protected ResultTypes getResultType() {
+        return ResultTypes.LIST_OF_UPDATES;
+    }
 
-        private int offset;
-        private int limit;
-        private int timeout;
+    @Override
+    protected Map<String, String> getArgs() {
+        return args;
+    }
 
-        public Builder() {
-        }
+    @Override
+    protected RequestStrategy getRequestStrategy() {
+        return new PostStrategy();
+    }
 
-        public Builder setOffset(int offset) {
-            this.offset = offset;
-            return this;
-        }
-
-        public Builder setLimit(int limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder setTimeout(int timeout) {
-            this.timeout = timeout;
-            return this;
-        }
-
-        public GetUpdatesRequest build() {
-            return new GetUpdatesRequest(this);
-        }
+    @Override
+    public String toString() {
+        return "GetUpdatesRequest{" +
+                "args=" + args +
+                '}';
     }
 }

@@ -16,13 +16,12 @@ public class SendMessageRequestTest extends RequestTest {
     public void testMakeRequest() throws Exception {
         ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup.Builder().row("A", "B", "C").build();
 
-        SendMessageRequest request = new SendMessageRequest.Builder(CHAT_ID, "Hey")
-                .setReplyMarkup(markup)
-                .build();
+        OptionalArgs optionalArgs = new OptionalArgs().replyMarkup(markup);
+        SendMessageRequest request = new SendMessageRequest(CHAT_ID, "Hey", optionalArgs);
 
-        ApiResult<Message> result = request.makeRequest(api);
+        Message message = request.execute(api);
 
-        assertEquals(result.getResult().getText(), "Hey");
+        assertEquals(message.getText(), "Hey");
     }
 
 }
