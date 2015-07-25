@@ -1,5 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by pieter on 25-7-15.
  */
-public class ReplyKeyboardMarkup {
+public class ReplyKeyboardMarkup implements ReplyMarkup {
 
     @SerializedName("keyboard")
     private List<List<String>> keyboard;
@@ -30,6 +31,11 @@ public class ReplyKeyboardMarkup {
         selective = builder.selective;
     }
 
+    @Override
+    public String serialize() {
+        return new Gson().toJson(this);
+    }
+
     public static class Builder {
 
         private List<List<String>> keyboard;
@@ -38,6 +44,7 @@ public class ReplyKeyboardMarkup {
         private boolean selective;
 
         public Builder() {
+            keyboard = new ArrayList<>();
         }
 
         public Builder row(String... buttons) {
@@ -75,6 +82,10 @@ public class ReplyKeyboardMarkup {
         public Builder setSelective(boolean selective) {
             this.selective = selective;
             return this;
+        }
+
+        public ReplyKeyboardMarkup build() {
+            return new ReplyKeyboardMarkup(this);
         }
     }
 

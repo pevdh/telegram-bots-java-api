@@ -1,5 +1,6 @@
 package co.vandenham.telegram.botapi;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -14,21 +15,19 @@ import static org.junit.Assert.*;
  */
 public class TelegramApiTest {
 
-    @Test
-    public void makeRequestShouldWork() {
-        String response = TelegramApi.makeGetRequest("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw", "getMe");
-        System.out.println(response);
-        assertNotNull(response);
+    private TelegramApi api;
+
+    @Before
+    public void setUp() throws Exception {
+        api = new TelegramApi("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw");
+
     }
 
     @Test
-    public void createQueryStringShouldWork() throws UnsupportedEncodingException {
-        Map<String, String> arguments = new HashMap<>(2);
-        arguments.put("email", "monkey@123.com");
-        arguments.put("redirection", "true");
-        String queryString = TelegramApi.createQueryString(arguments);
-        String expected = "redirection=true&email=" + URLEncoder.encode("monkey@123.com", "UTF-8");
-        assertEquals(expected, queryString);
+    public void makeRequestShouldWork() {
+        String response = api.makeGetRequest("getMe");
+        System.out.println(response);
+        assertNotNull(response);
     }
 
     @Test
@@ -38,7 +37,7 @@ public class TelegramApiTest {
         arguments.put("text", "test123");
 
         String response =
-                TelegramApi.makePostRequest("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw", "sendMessage", arguments);
+                api.makePostRequest("sendMessage", arguments);
         System.out.println(response);
         assertNotNull(response);
     }

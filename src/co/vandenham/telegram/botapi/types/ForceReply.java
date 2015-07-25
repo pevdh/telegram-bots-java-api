@@ -1,11 +1,12 @@
 package co.vandenham.telegram.botapi.types;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by pieter on 25-7-15.
  */
-public class ForceReply {
+public class ForceReply implements ReplyMarkup {
 
     @SerializedName("force_reply")
     private boolean forceReply = true;
@@ -26,5 +27,11 @@ public class ForceReply {
 
     public static ForceReply getNonSelective() {
         return NON_SELECTIVE;
+    }
+
+    @Override
+    public String serialize() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

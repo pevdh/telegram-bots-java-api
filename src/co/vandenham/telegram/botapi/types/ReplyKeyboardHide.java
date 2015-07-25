@@ -1,11 +1,12 @@
 package co.vandenham.telegram.botapi.types;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by pieter on 25-7-15.
  */
-public class ReplyKeyboardHide {
+public class ReplyKeyboardHide implements ReplyMarkup {
 
     @SerializedName("hide_keyboard")
     private boolean hideKeyboard = true;
@@ -28,4 +29,8 @@ public class ReplyKeyboardHide {
         return NON_SELECTIVE;
     }
 
+    @Override
+    public String serialize() {
+        return new Gson().toJson(this);
+    }
 }
