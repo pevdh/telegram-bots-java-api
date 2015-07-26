@@ -14,7 +14,7 @@ public class EchoBot extends TelegramBot {
     private static final Logger log = Logger.getLogger(EchoBot.class.getName());
 
     public EchoBot() {
-        super("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw");
+        super("TOKEN");
     }
 
     @Override
