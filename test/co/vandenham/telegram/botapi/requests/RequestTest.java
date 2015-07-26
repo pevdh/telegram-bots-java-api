@@ -8,8 +8,8 @@ import org.junit.Before;
  */
 public class RequestTest {
 
-    protected final static int CHAT_ID = 4663724;
-    protected final static String TOKEN = "82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw";
+    protected final static int CHAT_ID = -1;
+    protected final static String TOKEN = "TOKEN";
     protected TelegramApi api;
 
     @Before
