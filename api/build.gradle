@@ -1,0 +1,11 @@
+
+archivesBaseName = 'TelegramBots4Java'
+
+test {
+    exclude 'co/vandenham/telegram/botapi/requests/*'
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.3.1'
+    testCompile 'junit:junit:4.+'
+}
