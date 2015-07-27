@@ -63,7 +63,7 @@ abstract public class TelegramBot {
     }
 
     protected boolean shouldSendAsync() {
-        return false;
+        return true;
     }
 
     public ApiResponse<Message> forwardMessage(int chatId, int fromChatId, int messageId) {

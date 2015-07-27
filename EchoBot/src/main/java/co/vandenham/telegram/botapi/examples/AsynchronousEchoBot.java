@@ -19,11 +19,6 @@ public class AsynchronousEchoBot extends TelegramBot {
     }
 
     @Override
-    protected boolean shouldSendAsync() {
-        return true;
-    }
-
-    @Override
     protected void onMessage(Message message) {
         if (message.getType() == Message.Type.TEXT) {
             log.info(String.format("%s: %s", message.getChat().getId(), message.getText()));
