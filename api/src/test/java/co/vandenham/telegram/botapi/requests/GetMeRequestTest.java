@@ -16,7 +16,7 @@ public class GetMeRequestTest extends RequestTest {
 
     @Test
     public void testMakeRequest() throws Exception {
-        User user = new GetMeRequest().execute(api);
+        User user = requestExecutor.execute(api, new GetMeRequest()).getResult();
         assertEquals(user.getUsername(), "SoulseekBot");
     }
 }

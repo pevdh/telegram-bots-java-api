@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class ForwardMessageRequest extends ApiRequest<Message> {
+public class ForwardMessageRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -27,22 +27,22 @@ public class ForwardMessageRequest extends ApiRequest<Message> {
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "forwardMessage";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.MESSAGE;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class GetUpdatesRequest extends ApiRequest<List<Update>> {
+public class GetUpdatesRequest implements ApiRequest<List<Update>> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -18,26 +18,26 @@ public class GetUpdatesRequest extends ApiRequest<List<Update>> {
 
     public GetUpdatesRequest(OptionalArgs optionalArgs) {
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "getUpdates";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.LIST_OF_UPDATES;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 

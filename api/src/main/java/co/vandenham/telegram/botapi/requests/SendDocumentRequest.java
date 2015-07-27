@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class SendDocumentRequest extends ApiRequest<Message> {
+public class SendDocumentRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();
     private RequestStrategy requestStrategy;
@@ -22,7 +22,7 @@ public class SendDocumentRequest extends ApiRequest<Message> {
         args.put("chat_id", String.valueOf(chatId));
 
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
 
         requestStrategy = new MultipartStrategy(document, "document");
     }
@@ -36,28 +36,28 @@ public class SendDocumentRequest extends ApiRequest<Message> {
         args.put("document", document);
 
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
 
         requestStrategy = new PostStrategy();
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "sendDocument";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.MESSAGE;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return requestStrategy;
     }
 

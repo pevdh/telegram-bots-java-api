@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public final class SendMessageRequest extends ApiRequest<Message> {
+public final class SendMessageRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -21,26 +21,26 @@ public final class SendMessageRequest extends ApiRequest<Message> {
         args.put("text", text);
 
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "sendMessage";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.MESSAGE;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 

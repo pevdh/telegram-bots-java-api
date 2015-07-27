@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class SendChatActionRequest extends ApiRequest<Boolean> {
+public class SendChatActionRequest implements ApiRequest<Boolean> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -18,22 +18,22 @@ public class SendChatActionRequest extends ApiRequest<Boolean> {
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "sendChatAction";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.BOOLEAN;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 

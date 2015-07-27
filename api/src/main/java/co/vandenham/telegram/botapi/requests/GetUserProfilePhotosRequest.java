@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class GetUserProfilePhotosRequest extends ApiRequest<UserProfilePhotos> {
+public class GetUserProfilePhotosRequest implements ApiRequest<UserProfilePhotos> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -20,26 +20,26 @@ public class GetUserProfilePhotosRequest extends ApiRequest<UserProfilePhotos> {
         args.put("user_id", String.valueOf(userId));
 
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "getUserProfilePhotos";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.USER_PROFILE_PHOTOS;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 

@@ -19,7 +19,7 @@ public class SendMessageRequestTest extends RequestTest {
         OptionalArgs optionalArgs = new OptionalArgs().replyMarkup(markup);
         SendMessageRequest request = new SendMessageRequest(CHAT_ID, "Hey", optionalArgs);
 
-        Message message = request.execute(api);
+        Message message = requestExecutor.execute(api, request).getResult();
 
         assertEquals(message.getText(), "Hey");
     }

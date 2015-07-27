@@ -46,7 +46,7 @@ public final class TelegramApi {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-length", String.valueOf(query.length()));
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("User-Agent", "Telegram Bot Java API");
+            connection.setRequestProperty("User-Agent", "TelegramBots4Java API Agent");
 
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -130,7 +130,7 @@ public final class TelegramApi {
             httpConn.setDoInput(true);
             httpConn.setRequestProperty("Content-Type",
                     "multipart/form-data; boundary=" + boundary);
-            httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+            httpConn.setRequestProperty("User-Agent", "TelegramBots4Java API Agent");
             httpConn.setRequestProperty("Test", "Bonjour");
             outputStream = httpConn.getOutputStream();
             writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),

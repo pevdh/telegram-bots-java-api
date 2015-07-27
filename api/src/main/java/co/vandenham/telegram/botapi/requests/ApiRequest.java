@@ -1,58 +1,31 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.ApiException;
 import co.vandenham.telegram.botapi.TelegramApi;
 import co.vandenham.telegram.botapi.types.Message;
 import co.vandenham.telegram.botapi.types.Update;
 import co.vandenham.telegram.botapi.types.User;
 import co.vandenham.telegram.botapi.types.UserProfilePhotos;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
- * Created by pieter on 25-7-15.
+ * Created by pieter on 27-7-15.
  */
-abstract public class ApiRequest<T> {
+public interface ApiRequest<T> {
 
-    private static final Logger log = Logger.getLogger(GetUpdatesRequest.class.getName());
-    private static final Gson gson = new Gson();
+    String getMethodName();
 
-    private  ApiResult<T> deserialize(String json, ResultTypes resultType) {
-        return gson.fromJson(json, resultType.getType());
-    }
+    ResultTypes getResultType();
 
-    abstract protected String getMethodName();
+    Map<String, String> getArgs();
 
-    abstract protected ResultTypes getResultType();
+    RequestStrategy getRequestStrategy();
 
-    abstract protected Map<String, String> getArgs();
-
-    abstract protected RequestStrategy getRequestStrategy();
-
-    protected <K, V> void copyMap(Map<K, V> src, Map<K, V> dst) {
-        dst.putAll(src);
-    }
-
-    public T execute(TelegramApi api) {
-        log.info(toString());
-
-        String response = getRequestStrategy().makeRequest(this, api);
-
-        ApiResult<T> result = deserialize(response, getResultType());
-
-        if (!result.isOk())
-            throw new ApiException(getMethodName(), result);
-
-        return result.getResult();
-    }
-
-    protected enum ResultTypes {
+    enum ResultTypes {
         USER(new TypeToken<ApiResult<User>>(){}.getType()),
         MESSAGE(new TypeToken<ApiResult<Message>>(){}.getType()),
         BOOLEAN(new TypeToken<ApiResult<Boolean>>(){}.getType()),
@@ -70,13 +43,13 @@ abstract public class ApiRequest<T> {
         }
     }
 
-    protected interface RequestStrategy {
+    interface RequestStrategy {
 
         String makeRequest(ApiRequest<?> request, TelegramApi api);
 
     }
 
-    protected final class PostStrategy implements RequestStrategy {
+    final class PostStrategy implements RequestStrategy {
 
         @Override
         public String makeRequest(ApiRequest<?> request, TelegramApi api) {
@@ -89,7 +62,7 @@ abstract public class ApiRequest<T> {
         }
     }
 
-    protected final class GetStrategy implements RequestStrategy {
+    final class GetStrategy implements RequestStrategy {
 
         @Override
         public String makeRequest(ApiRequest<?> request, TelegramApi api) {
@@ -102,7 +75,7 @@ abstract public class ApiRequest<T> {
         }
     }
 
-    protected final class MultipartStrategy implements RequestStrategy {
+    final class MultipartStrategy implements RequestStrategy {
 
         private File file;
         private String fieldName;

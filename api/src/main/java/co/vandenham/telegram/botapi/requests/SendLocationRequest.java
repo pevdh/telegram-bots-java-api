@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by pieter on 25-7-15.
  */
-public class SendLocationRequest extends ApiRequest<Message> {
+public class SendLocationRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();
 
@@ -22,26 +22,26 @@ public class SendLocationRequest extends ApiRequest<Message> {
         args.put("longitude", String.valueOf(longitude));
 
         if (optionalArgs != null)
-            copyMap(optionalArgs.options(), args);
+            args.putAll(optionalArgs.options());
     }
 
     @Override
-    protected String getMethodName() {
+    public String getMethodName() {
         return "sendLocation";
     }
 
     @Override
-    protected ResultTypes getResultType() {
+    public ResultTypes getResultType() {
         return ResultTypes.MESSAGE;
     }
 
     @Override
-    protected Map<String, String> getArgs() {
+    public Map<String, String> getArgs() {
         return args;
     }
 
     @Override
-    protected RequestStrategy getRequestStrategy() {
+    public RequestStrategy getRequestStrategy() {
         return new PostStrategy();
     }
 

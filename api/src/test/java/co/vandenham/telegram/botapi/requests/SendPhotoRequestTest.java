@@ -19,7 +19,7 @@ public class SendPhotoRequestTest extends RequestTest {
 
         OptionalArgs optionalArgs = new OptionalArgs().caption("Lol...");
         SendPhotoRequest request = new SendPhotoRequest(4663724, photo, optionalArgs);
-        Message message = request.execute(api);
+        Message message = requestExecutor.execute(api, request).getResult();
         assertTrue(message.getMessageId() > 0);
     }
 }

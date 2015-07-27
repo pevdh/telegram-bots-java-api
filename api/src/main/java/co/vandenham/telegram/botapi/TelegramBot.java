@@ -12,11 +12,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by pieter on 24-7-15.
  */
 abstract public class TelegramBot {
+
+    private static final Logger logger = Logger.getLogger(TelegramBot.class.getName());
 
     private TelegramApi api;
 
@@ -24,15 +28,22 @@ abstract public class TelegramBot {
     private AtomicBoolean running = new AtomicBoolean();;
     private int lastUpdateId = 0;
 
+    private ApiRequestExecutor requestExecutor;
     private ExecutorService executorService;
 
     public TelegramBot(String botToken) {
         api = new TelegramApi(botToken);
-        executorService = Executors.newCachedThreadPool();
     }
 
     public void start() {
+        logger.info("Starting");
+
+        executorService = provideExecutorService();
+        requestExecutor = shouldSendAsync() ?
+                ApiRequestExecutor.getAsynchronousExecutor() : ApiRequestExecutor.getSynchronousExecutor();
+        
         running.set(true);
+        
         pollThread = new Thread(new UpdatePoller());
         pollThread.start();
     }
@@ -46,124 +57,149 @@ abstract public class TelegramBot {
             e.printStackTrace();
         }
     }
-
-    public Message forwardMessage(int chatId, int fromChatId, int messageId) {
-        return new ForwardMessageRequest(chatId, fromChatId, messageId).execute(api);
+    
+    protected ExecutorService provideExecutorService() {
+        return Executors.newCachedThreadPool();
     }
 
-    public User getMe() {
-        return new GetMeRequest().execute(api);
+    protected boolean shouldSendAsync() {
+        return false;
     }
 
-    public UserProfilePhotos getUserProfilePhotos(int userId) {
-        return new GetUserProfilePhotosRequest(userId).execute(api);
+    public ApiResponse<Message> forwardMessage(int chatId, int fromChatId, int messageId) {
+        return requestExecutor.execute(api, new ForwardMessageRequest(chatId, fromChatId, messageId));
     }
 
-    public UserProfilePhotos getUserProfilePhotos(int userId, OptionalArgs optionalArgs) {
-        return new GetUserProfilePhotosRequest(userId, optionalArgs).execute(api);
+    public ApiResponse<User> getMe() {
+        return requestExecutor.execute(api, new GetMeRequest());
     }
 
-    public Message sendAudio(int chatId, File audioFile) {
-        return new SendAudioRequest(chatId, audioFile).execute(api);
+    public ApiResponse<UserProfilePhotos> getUserProfilePhotos(int userId) {
+        return requestExecutor.execute(api, new GetUserProfilePhotosRequest(userId));
     }
 
-    public Message sendAudio(int chatId, File audioFile, OptionalArgs optionalArgs) {
-        return new SendAudioRequest(chatId, audioFile, optionalArgs).execute(api);
+    public ApiResponse<UserProfilePhotos> getUserProfilePhotos(int userId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new GetUserProfilePhotosRequest(userId, optionalArgs));
     }
 
-    public Message sendAudio(int chatId, String audioFileId) {
-        return new SendAudioRequest(chatId, audioFileId).execute(api);
+    public ApiResponse<Message> sendAudio(int chatId, File audioFile) {
+        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFile));
     }
 
-    public Message sendAudio(int chatId, String audioFileId, OptionalArgs optionalArgs) {
-        return new SendAudioRequest(chatId, audioFileId, optionalArgs).execute(api);
+    public ApiResponse<Message> sendAudio(int chatId, File audioFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFile, optionalArgs));
     }
 
-    public Boolean sendChatAction(int chatId, ChatAction chatAction) {
-        return new SendChatActionRequest(chatId, chatAction).execute(api);
+    public ApiResponse<Message> sendAudio(int chatId, String audioFileId) {
+        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFileId));
     }
 
-    public Message sendDocument(int chatId, File documentFile) {
-        return new SendDocumentRequest(chatId, documentFile).execute(api);
+    public ApiResponse<Message> sendAudio(int chatId, String audioFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFileId, optionalArgs));
     }
 
-    public Message sendDocument(int chatId, File documentFile, OptionalArgs optionalArgs) {
-        return new SendDocumentRequest(chatId, documentFile, optionalArgs).execute(api);
+    public ApiResponse<Boolean> sendChatAction(int chatId, ChatAction chatAction) {
+        return requestExecutor.execute(api, new SendChatActionRequest(chatId, chatAction));
     }
 
-    public Message sendDocument(int chatId, String documentFileId) {
-        return new SendDocumentRequest(chatId, documentFileId).execute(api);
+    public ApiResponse<Message> sendDocument(int chatId, File documentFile) {
+        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFile));
     }
 
-    public Message sendDocument(int chatId, String documentFileId, OptionalArgs optionalArgs) {
-        return new SendDocumentRequest(chatId, documentFileId, optionalArgs).execute(api);
+    public ApiResponse<Message> sendDocument(int chatId, File documentFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFile, optionalArgs));
     }
 
-    public Message sendLocation(int chatId, float latitude, float longitude) {
-        return new SendLocationRequest(chatId, latitude, longitude).execute(api);
+    public ApiResponse<Message> sendDocument(int chatId, String documentFileId) {
+        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFileId));
     }
 
-    public Message sendLocation(int chatId, float latitude, float longitude, OptionalArgs optionalArgs) {
-        return new SendLocationRequest(chatId, latitude, longitude, optionalArgs).execute(api);
+    public ApiResponse<Message> sendDocument(int chatId, String documentFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFileId, optionalArgs));
     }
 
-    public Message sendMessage(int chatId, String text) {
-        return new SendMessageRequest(chatId, text).execute(api);
+    public ApiResponse<Message> sendLocation(int chatId, float latitude, float longitude) {
+        return requestExecutor.execute(api, new SendLocationRequest(chatId, latitude, longitude));
     }
 
-    public Message sendMessage(int chatId, String text, OptionalArgs optionalArgs) {
-        return new SendMessageRequest(chatId, text, optionalArgs).execute(api);
+    public ApiResponse<Message> sendLocation(int chatId, float latitude, float longitude, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendLocationRequest(chatId, latitude, longitude, optionalArgs));
     }
 
-    public Message sendPhoto(int chatId, File photoFile) {
-        return new SendPhotoRequest(chatId, photoFile).execute(api);
+    public ApiResponse<Message> sendMessage(int chatId, String text) {
+        return requestExecutor.execute(api, new SendMessageRequest(chatId, text));
     }
 
-    public Message sendPhoto(int chatId, File photoFile, OptionalArgs optionalArgs) {
-        return new SendPhotoRequest(chatId, photoFile, optionalArgs).execute(api);
+    public ApiResponse<Message> sendMessage(int chatId, String text, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendMessageRequest(chatId, text, optionalArgs));
     }
 
-    public Message sendPhoto(int chatId, String photoFileId) {
-        return new SendPhotoRequest(chatId, photoFileId).execute(api);
+    public ApiResponse<Message> sendPhoto(int chatId, File photoFile) {
+        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFile));
     }
 
-    public Message sendPhoto(int chatId, String photoFileId, OptionalArgs optionalArgs) {
-        return new SendPhotoRequest(chatId, photoFileId, optionalArgs).execute(api);
+    public ApiResponse<Message> sendPhoto(int chatId, File photoFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFile, optionalArgs));
     }
 
-    public Message sendSticker(int chatId, File stickerFile) {
-        return new SendStickerRequest(chatId, stickerFile).execute(api);
+    public ApiResponse<Message> sendPhoto(int chatId, String photoFileId) {
+        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFileId));
     }
 
-    public Message sendSticker(int chatId, File stickerFile, OptionalArgs optionalArgs) {
-        return new SendStickerRequest(chatId, stickerFile, optionalArgs).execute(api);
+    public ApiResponse<Message> sendPhoto(int chatId, String photoFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFileId, optionalArgs));
     }
 
-    public Message sendSticker(int chatId, String stickerFileId) {
-        return new SendStickerRequest(chatId, stickerFileId).execute(api);
+    public ApiResponse<Message> sendSticker(int chatId, File stickerFile) {
+        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFile));
     }
 
-    public Message sendSticker(int chatId, String stickerFileId, OptionalArgs optionalArgs) {
-        return new SendStickerRequest(chatId, stickerFileId, optionalArgs).execute(api);
+    public ApiResponse<Message> sendSticker(int chatId, File stickerFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFile, optionalArgs));
     }
 
-    public Message sendVideo(int chatId, File videoFile) {
-        return new SendVideoRequest(chatId, videoFile).execute(api);
+    public ApiResponse<Message> sendSticker(int chatId, String stickerFileId) {
+        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFileId));
     }
 
-    public Message sendVideo(int chatId, File videoFile, OptionalArgs optionalArgs) {
-        return new SendVideoRequest(chatId, videoFile, optionalArgs).execute(api);
+    public ApiResponse<Message> sendSticker(int chatId, String stickerFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFileId, optionalArgs));
     }
 
-    public Message sendVideo(int chatId, String videoFileId) {
-        return new SendVideoRequest(chatId, videoFileId).execute(api);
+    public ApiResponse<Message> sendVideo(int chatId, File videoFile) {
+        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFile));
     }
 
-    public Message sendVideo(int chatId, String videoFileId, OptionalArgs optionalArgs) {
-        return new SendVideoRequest(chatId, videoFileId, optionalArgs).execute(api);
+    public ApiResponse<Message> sendVideo(int chatId, File videoFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFile, optionalArgs));
     }
 
-    abstract protected void onMessages(List<Message> messages);
+    public ApiResponse<Message> sendVideo(int chatId, String videoFileId) {
+        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFileId));
+    }
+
+    public ApiResponse<Message> sendVideo(int chatId, String videoFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFileId, optionalArgs));
+    }
+
+    protected ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    protected void onMessage(Message message) {
+        // Can be overridden by subclasses.
+    };
+
+    protected void notifyNewMessages(List<Message> messages) {
+        for (final Message message : messages) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    onMessage(message);
+                }
+            });
+        }
+    }
 
     private class UpdatePoller implements Runnable {
 
@@ -173,7 +209,7 @@ abstract public class TelegramBot {
                 try {
                     poll();
                 } catch (ApiException e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "An exception occurred while polling Telegram.", e);
                     running.set(false);
                 }
             }
@@ -183,15 +219,11 @@ abstract public class TelegramBot {
             OptionalArgs optionalArgs = new OptionalArgs().offset(lastUpdateId + 1).timeout(3);
             GetUpdatesRequest request = new GetUpdatesRequest(optionalArgs);
 
-            List<Update> updates = request.execute(api);
+            List<Update> updates = requestExecutor.execute(api, request).getResult();
             if (updates.size() > 0) {
                 List<Message> newMessages = processUpdates(updates);
-                notify(newMessages);
+                notifyNewMessages(newMessages);
             }
-        }
-
-        private void notify(List<Message> newMessages) {
-            executorService.submit(new MessageNotifier(newMessages));
         }
 
         private List<Message> processUpdates(List<Update> updates) {
@@ -204,20 +236,6 @@ abstract public class TelegramBot {
             }
 
             return newMessages;
-        }
-    }
-
-    private class MessageNotifier implements Runnable {
-
-        private List<Message> messages;
-
-        public MessageNotifier(List<Message> messages) {
-            this.messages = messages;
-        }
-
-        @Override
-        public void run() {
-            onMessages(messages);
         }
     }
 

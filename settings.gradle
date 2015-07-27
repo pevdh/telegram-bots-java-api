@@ -1,1 +1,1 @@
-include ':api', ':Example1'
+include ':api', ':EchoBot'
