@@ -18,8 +18,7 @@ public class RegistrableTelegramBot extends TelegramBot {
     }
 
     public RegistrableTelegramBot(String botToken, boolean async) {
-        super(botToken);
-        this.async = async;
+        super(botToken, async);
     }
 
     public void register(MessageListener messageListener) {
@@ -35,10 +34,6 @@ public class RegistrableTelegramBot extends TelegramBot {
         return null;
     }
 
-    @Override
-    protected boolean shouldSendAsync() {
-        return async;
-    }
 
     @Override
     protected void notifyNewMessages(List<Message> messages) {
