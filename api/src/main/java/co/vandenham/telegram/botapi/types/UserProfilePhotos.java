@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by pieter on 25-7-15.
+ * This object represent a user's profile pictures.
+ *
+ * @see <a href="https://core.telegram.org/bots/api#userprofilephotos">https://core.telegram.org/bots/api#userprofilephotos</a>
  */
 public class UserProfilePhotos {
 
@@ -15,19 +17,26 @@ public class UserProfilePhotos {
     @SerializedName("photos")
     private List<List<PhotoSize>> photos;
 
-    public UserProfilePhotos() {
-    }
-
-    public UserProfilePhotos(int totalCount, List<List<PhotoSize>> photos) {
-        this.totalCount = totalCount;
-        this.photos = photos;
-    }
-
+    /**
+     * @return Total number of profile pictures the target user has
+     */
     public int getTotalCount() {
         return totalCount;
     }
 
+    /**
+     * @return Requested profile pictures (in up to 4 sizes each)
+     */
     public List<List<PhotoSize>> getPhotos() {
         return photos;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserProfilePhotos{");
+        sb.append("totalCount=").append(totalCount);
+        sb.append(", photos=").append(photos);
+        sb.append('}');
+        return sb.toString();
     }
 }

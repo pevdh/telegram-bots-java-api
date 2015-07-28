@@ -3,7 +3,11 @@ package co.vandenham.telegram.botapi.types;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by pieter on 25-7-15.
+ * This object represents one size of a photo or a file / sticker thumbnail.
+ *
+ * Any getters labeled <i>optional</i> might return a default value (such as {@code null}).
+ *
+ * @see <a href="https://core.telegram.org/bots/api#photosize">https://core.telegram.org/bots/api#photosize</a>
  */
 public class PhotoSize {
 
@@ -19,29 +23,44 @@ public class PhotoSize {
     @SerializedName("file_size")
     private int fileSize = -1;
 
-    public PhotoSize() {
-    }
-
-    public PhotoSize(String fileId, int width, int height) {
-        this.fileId = fileId;
-        this.width = width;
-        this.height = height;
-    }
-
+    /**
+     * @return Unique identifier for this file
+     */
     public String getFileId() {
         return fileId;
     }
 
+    /**
+     * @return Photo width
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return Photo height
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * <i>Optional.</i>
+     *
+     * @return File size
+     */
     public int getFileSize() {
         return fileSize;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PhotoSize{");
+        sb.append("fileId='").append(fileId).append('\'');
+        sb.append(", width=").append(width);
+        sb.append(", height=").append(height);
+        sb.append(", fileSize=").append(fileSize);
+        sb.append('}');
+        return sb.toString();
+    }
 }

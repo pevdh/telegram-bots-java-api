@@ -3,7 +3,11 @@ package co.vandenham.telegram.botapi.types;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by pieter on 25-7-15.
+ * This object represents a phone contact.
+ *
+ * Any getters labeled <i>optional</i> might return a default value (such as {@code null}).
+ *
+ * @see <a href="https://core.telegram.org/bots/api#contact">https://core.telegram.org/bots/api#contact</a>
  */
 public class Contact {
 
@@ -19,26 +23,34 @@ public class Contact {
     @SerializedName("user_id")
     private String userId;
 
-    public Contact() {
-    }
-
-    public Contact(String phoneNumber, String firstName) {
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-    }
-
+    /**
+     * @return Contact's phone number
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * @return Contact's first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * <i>Optional.</i>
+     *
+     * @return Contact's last name
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * <i>Optional.</i>
+     *
+     * @return Contact's user identifier in Telegram
+     */
     public String getUserId() {
         return userId;
     }

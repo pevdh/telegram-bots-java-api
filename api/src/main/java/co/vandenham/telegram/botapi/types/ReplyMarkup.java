@@ -1,10 +1,13 @@
 package co.vandenham.telegram.botapi.types;
 
 /**
- * Created by pieter on 25-7-15.
+ * Defines a general interface for reply markups.
  */
 public interface ReplyMarkup {
 
+    /**
+     * @return This instance converted to a JSON String.
+     */
     String serialize();
 
 }
