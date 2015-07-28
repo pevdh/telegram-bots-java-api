@@ -3,9 +3,6 @@ package co.vandenham.telegram.botapi.requests;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class SendChatActionRequest implements ApiRequest<Boolean> {
 
     private Map<String, String> args = new HashMap<>();

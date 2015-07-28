@@ -6,9 +6,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class SendPhotoRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();

@@ -11,11 +11,16 @@ public class AsynchronousEchoBot extends TelegramBot {
 
 
     public AsynchronousEchoBot() {
-        super("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw");
+        super(System.getenv("TOKEN"));
     }
 
-    @Override
-    protected void onMessage(Message message) {
+    @CommandHandler({"start", "help"})
+    public void handleHelp(Message message) {
+        replyTo(message, "Hi there! I am here to echo all your kind words back to you!");
+    }
+
+    @DefaultHandler
+    public void handleDefault(Message message) {
         if (message.getType() == Message.Type.TEXT) {
             log.info(String.format("%s: %s", message.getChat().getId(), message.getText()));
 

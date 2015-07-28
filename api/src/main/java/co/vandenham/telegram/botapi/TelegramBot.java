@@ -39,6 +39,8 @@ abstract public class TelegramBot {
     private ExecutorService executorService;
 
     private boolean sendAsync = true;
+
+    private Method defaultHandler;
     private Map<String, Method> commandHandlerMapping = new HashMap<>();
 
     /**
@@ -90,11 +92,13 @@ abstract public class TelegramBot {
         Method[] declaredMethods = this.getClass().getDeclaredMethods();
         for (Method method : declaredMethods) {
             if (method.isAnnotationPresent(CommandHandler.class)) {
-                CommandHandler commandHandlerAnnotation = (CommandHandler) method.getAnnotation(CommandHandler.class);
-                for (String command : commandHandlerAnnotation.commands()) {
+                CommandHandler commandHandlerAnnotation = method.getAnnotation(CommandHandler.class);
+                for (String command : commandHandlerAnnotation.value()) {
                     commandHandlerMapping.put(command, method);
                 }
             }
+            if (method.isAnnotationPresent(DefaultHandler.class))
+                defaultHandler = method;
         }
     }
 
@@ -433,7 +437,15 @@ abstract public class TelegramBot {
     }
 
     /**
-     * This method is called when a new message arrived.
+     * Convenience method for {@code sendMessage(message.getChat().getId(), text, new OptionalArgs().replyToMessageId(message.getMessageId()))}
+     */
+    public final ApiResponse<Message> replyTo(Message message, String text) {
+        OptionalArgs optionalArgs = new OptionalArgs().replyToMessageId(message.getMessageId());
+        return sendMessage(message.getChat().getId(), text, optionalArgs);
+    }
+
+    /**
+     * This method is called when a new message has arrived.
      * It can safely be overridden by subclasses.
      *
      * @param message The newly arrived {@link Message}
@@ -460,14 +472,20 @@ abstract public class TelegramBot {
 
             final String potentialCommand = extractCommand(message);
 
-            if (extractCommand(message) != null && commandHandlerMapping.containsKey(potentialCommand)) {
-                executorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyCommandHandler(commandHandlerMapping.get(potentialCommand), message);
-                    }
-                });
+            final Method handler;
+
+            if (potentialCommand != null && commandHandlerMapping.containsKey(potentialCommand)) {
+                handler = commandHandlerMapping.get(potentialCommand);
+            } else {
+                handler = defaultHandler;
             }
+
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    notifyCommandHandler(handler, message);
+                }
+            });
         }
     }
 
@@ -496,7 +514,14 @@ abstract public class TelegramBot {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     protected @interface CommandHandler {
-        String[] commands();
+        String[] value();
+    }
+
+    @Documented
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    protected @interface DefaultHandler {
+
     }
 
     private class UpdatePoller implements Runnable {

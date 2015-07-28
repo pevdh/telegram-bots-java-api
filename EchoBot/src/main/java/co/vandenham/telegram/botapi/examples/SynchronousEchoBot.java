@@ -13,16 +13,16 @@ public class SynchronousEchoBot extends TelegramBot {
     private static final Logger log = Logger.getLogger(SynchronousEchoBot.class.getName());
 
     public SynchronousEchoBot() {
-        super("82565878:AAEBPQjeCPZgkCVrEVO7ewx4X7G7FV8JVRw");
+        super(System.getenv("TOKEN"), false);
     }
 
-    @Override
-    protected boolean shouldSendAsync() {
-        return false;
+    @CommandHandler({"start", "help"})
+    public void handleHelp(Message message) {
+        replyTo(message, "Hi there! I am here to echo all your kind words back to you!");
     }
 
-    @Override
-    protected void onMessage(Message message) {
+    @DefaultHandler
+    public void handleDefault(Message message) {
         if (message.getType() == Message.Type.TEXT) {
             log.info(String.format("%s: %s", message.getChat().getId(), message.getText()));
 

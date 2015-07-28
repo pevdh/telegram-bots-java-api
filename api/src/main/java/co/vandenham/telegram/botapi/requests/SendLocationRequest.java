@@ -5,9 +5,6 @@ import co.vandenham.telegram.botapi.types.Message;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class SendLocationRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();
