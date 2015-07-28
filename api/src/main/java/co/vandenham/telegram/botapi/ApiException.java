@@ -2,9 +2,7 @@ package co.vandenham.telegram.botapi;
 
 import co.vandenham.telegram.botapi.requests.ApiResult;
 
-/**
- * Created by pieter on 24-7-15.
- */
+
 public class ApiException extends RuntimeException {
 
     private String methodName;

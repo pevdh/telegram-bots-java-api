@@ -8,14 +8,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ReplyKeyboardHide implements ReplyMarkup {
 
-    @SerializedName("hide_keyboard")
-    private boolean hideKeyboard = true;
-
-    @SerializedName("selective")
-    private boolean selective = false;
-
     private final static ReplyKeyboardHide NON_SELECTIVE = new ReplyKeyboardHide(false);
     private final static ReplyKeyboardHide SELECTIVE = new ReplyKeyboardHide(true);
+    @SerializedName("hide_keyboard")
+    private boolean hideKeyboard = true;
+    @SerializedName("selective")
+    private boolean selective = false;
 
     public ReplyKeyboardHide(boolean selective) {
         this.selective = selective;

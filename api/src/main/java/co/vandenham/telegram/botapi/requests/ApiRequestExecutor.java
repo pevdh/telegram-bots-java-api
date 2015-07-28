@@ -7,9 +7,6 @@ import com.google.gson.Gson;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
 
-/**
- * Created by pieter on 27-7-15.
- */
 abstract public class ApiRequestExecutor {
 
     private static final Logger log = Logger.getLogger(ApiRequestExecutor.class.getName());
@@ -19,7 +16,8 @@ abstract public class ApiRequestExecutor {
     private static final ApiRequestExecutor asynchronousExecutor = new AsyncApiRequestExecutor();
 
     // Non instantiable/subclassable
-    private ApiRequestExecutor() {}
+    private ApiRequestExecutor() {
+    }
 
     public static ApiRequestExecutor getSynchronousExecutor() {
         return synchronousExecutor;
@@ -29,7 +27,7 @@ abstract public class ApiRequestExecutor {
         return asynchronousExecutor;
     }
 
-    protected  <T> ApiResult<T> deserialize(String json, ApiRequest.ResultTypes resultType) {
+    protected <T> ApiResult<T> deserialize(String json, ApiRequest.ResultTypes resultType) {
         return gson.fromJson(json, resultType.getType());
     }
 
@@ -82,7 +80,7 @@ abstract public class ApiRequestExecutor {
         public T getResult() {
             try {
                 return result.get();
-            } catch (InterruptedException|ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
             return null;
@@ -106,7 +104,6 @@ abstract public class ApiRequestExecutor {
         }
 
     }
-
 
 
 }

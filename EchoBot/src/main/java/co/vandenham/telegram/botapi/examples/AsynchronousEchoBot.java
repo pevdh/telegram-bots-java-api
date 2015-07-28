@@ -1,14 +1,10 @@
 package co.vandenham.telegram.botapi.examples;
 
 import co.vandenham.telegram.botapi.TelegramBot;
-import co.vandenham.telegram.botapi.requests.ApiRequestExecutor;
 import co.vandenham.telegram.botapi.types.Message;
 
 import java.util.logging.Logger;
 
-/**
- * Created by pieter on 28-7-15.
- */
 public class AsynchronousEchoBot extends TelegramBot {
 
     private static final Logger log = Logger.getLogger(SynchronousEchoBot.class.getName());

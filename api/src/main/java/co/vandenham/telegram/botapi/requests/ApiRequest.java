@@ -12,10 +12,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by pieter on 27-7-15.
- */
-public interface ApiRequest<T> {
+interface ApiRequest<T> {
 
     String getMethodName();
 
@@ -26,11 +23,11 @@ public interface ApiRequest<T> {
     RequestStrategy getRequestStrategy();
 
     enum ResultTypes {
-        USER(new TypeToken<ApiResult<User>>(){}.getType()),
-        MESSAGE(new TypeToken<ApiResult<Message>>(){}.getType()),
-        BOOLEAN(new TypeToken<ApiResult<Boolean>>(){}.getType()),
-        USER_PROFILE_PHOTOS(new TypeToken<ApiResult<UserProfilePhotos>>(){}.getType()),
-        LIST_OF_UPDATES(new TypeToken<ApiResult<List<Update>>>(){}.getType());
+        USER(new TypeToken<ApiResult<User>>() {}.getType()),
+        MESSAGE(new TypeToken<ApiResult<Message>>() {}.getType()),
+        BOOLEAN(new TypeToken<ApiResult<Boolean>>() {}.getType()),
+        USER_PROFILE_PHOTOS(new TypeToken<ApiResult<UserProfilePhotos>>() {}.getType()),
+        LIST_OF_UPDATES(new TypeToken<ApiResult<List<Update>>>() {}.getType());
 
         private Type type;
 

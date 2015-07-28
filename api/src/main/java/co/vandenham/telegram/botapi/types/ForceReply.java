@@ -8,14 +8,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ForceReply implements ReplyMarkup {
 
-    @SerializedName("force_reply")
-    private boolean forceReply = true;
-
-    @SerializedName("selective")
-    private boolean selective = false;
-
     private static final ForceReply SELECTIVE = new ForceReply(true);
     private static final ForceReply NON_SELECTIVE = new ForceReply(false);
+    @SerializedName("force_reply")
+    private boolean forceReply = true;
+    @SerializedName("selective")
+    private boolean selective = false;
 
     private ForceReply(boolean selective) {
         this.selective = selective;

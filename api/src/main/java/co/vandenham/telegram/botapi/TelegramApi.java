@@ -2,7 +2,6 @@ package co.vandenham.telegram.botapi;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -11,20 +10,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-/**
- * Created by pieter on 24-7-15.
- */
+
 public final class TelegramApi {
 
+    public static final String API_URL = "https://api.telegram.org/bot%s/%s";
     private final String token;
-
-    private final static String LINE_FEED = "\r\n";
 
     public TelegramApi(String token) {
         this.token = token;
     }
 
-    public static final String API_URL =  "https://api.telegram.org/bot%s/%s";
+    private static String createQueryString(Map<String, String> arguments) throws UnsupportedEncodingException {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Map.Entry<String, String> entry : arguments.entrySet()) {
+            stringBuilder.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+                    .append("=")
+                    .append(URLEncoder.encode(entry.getValue(), "UTF-8"))
+                    .append("&");
+        }
+        return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
+    }
+
+    private static String readAll(InputStream input) {
+        Scanner scanner = new Scanner(input);
+        scanner.useDelimiter("\\A");
+        return scanner.hasNext() ? scanner.next() : null;
+    }
 
     public String makeGetRequest(String method) {
         try {
@@ -76,24 +88,6 @@ public final class TelegramApi {
         }
     }
 
-    private static String createQueryString(Map<String, String> arguments) throws UnsupportedEncodingException {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (Map.Entry<String, String> entry : arguments.entrySet()) {
-            stringBuilder.append(URLEncoder.encode(entry.getKey(), "UTF-8"))
-                    .append("=")
-                    .append(URLEncoder.encode(entry.getValue(), "UTF-8"))
-                    .append("&");
-        }
-        return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
-    }
-
-    private static String readAll(InputStream input) {
-        Scanner scanner = new Scanner(input);
-        scanner.useDelimiter("\\A");
-        return scanner.hasNext() ? scanner.next() : null;
-    }
-
     private HttpsURLConnection buildConnection(String methodName) {
         try {
             return (HttpsURLConnection) new URL(String.format(API_URL, token, methodName)).openConnection();
@@ -103,8 +97,8 @@ public final class TelegramApi {
     }
 
     private static class MultipartUtility {
-        private final String boundary;
         private static final String LINE_FEED = "\r\n";
+        private final String boundary;
         private HttpsURLConnection httpConn;
         private String charset;
         private OutputStream outputStream;
@@ -113,6 +107,7 @@ public final class TelegramApi {
         /**
          * This constructor initializes a new HTTP POST request with content type
          * is set to multipart/form-data
+         *
          * @param httpConn
          * @param charset
          * @throws IOException
@@ -139,7 +134,8 @@ public final class TelegramApi {
 
         /**
          * Adds a form field to the request
-         * @param name field name
+         *
+         * @param name  field name
          * @param value field value
          */
         public void addFormField(String name, String value) {
@@ -155,7 +151,8 @@ public final class TelegramApi {
 
         /**
          * Adds a upload file section to the request
-         * @param fieldName name attribute in <input type="file" name="..." />
+         *
+         * @param fieldName  name attribute in <input type="file" name="..." />
          * @param uploadFile a File to be uploaded
          * @throws IOException
          */
@@ -190,7 +187,8 @@ public final class TelegramApi {
 
         /**
          * Adds a header field to the request.
-         * @param name - name of the header field
+         *
+         * @param name  - name of the header field
          * @param value - value of the header field
          */
         public void addHeaderField(String name, String value) {
@@ -200,6 +198,7 @@ public final class TelegramApi {
 
         /**
          * Completes the request and receives response from the server.
+         *
          * @return a list of Strings as response in case the server returned
          * status OK, otherwise an exception is thrown.
          * @throws IOException

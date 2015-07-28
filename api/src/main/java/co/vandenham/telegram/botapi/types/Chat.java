@@ -2,8 +2,6 @@ package co.vandenham.telegram.botapi.types;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.security.acl.Group;
-
 /**
  * Created by pieter on 25-7-15.
  */

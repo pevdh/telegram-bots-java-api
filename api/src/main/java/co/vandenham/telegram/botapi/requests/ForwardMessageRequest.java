@@ -1,14 +1,10 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.TelegramApi;
 import co.vandenham.telegram.botapi.types.Message;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class ForwardMessageRequest implements ApiRequest<Message> {
 
     private Map<String, String> args = new HashMap<>();

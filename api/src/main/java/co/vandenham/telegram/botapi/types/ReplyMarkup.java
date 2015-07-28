@@ -5,6 +5,6 @@ package co.vandenham.telegram.botapi.types;
  */
 public interface ReplyMarkup {
 
-    public String serialize();
+    String serialize();
 
 }

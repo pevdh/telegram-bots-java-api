@@ -77,10 +77,6 @@ public class Message {
 
     private Type type;
 
-    public enum Type {
-        TEXT, DOCUMENT, AUDIO, PHOTO, STICKER, VIDEO, CONTACT, LOCATION, UNKNOWN
-    }
-
     public int getMessageId() {
         return messageId;
     }
@@ -202,5 +198,9 @@ public class Message {
 
         else
             type = Type.UNKNOWN;
+    }
+
+    public enum Type {
+        TEXT, DOCUMENT, AUDIO, PHOTO, STICKER, VIDEO, CONTACT, LOCATION, UNKNOWN
     }
 }

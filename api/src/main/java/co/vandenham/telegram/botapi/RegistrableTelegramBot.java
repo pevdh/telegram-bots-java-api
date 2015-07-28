@@ -1,6 +1,5 @@
 package co.vandenham.telegram.botapi;
 
-import co.vandenham.telegram.botapi.requests.ApiRequestExecutor;
 import co.vandenham.telegram.botapi.types.Message;
 
 import java.util.List;
@@ -8,9 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by pieter on 27-7-15.
- */
 public class RegistrableTelegramBot extends TelegramBot {
 
     private boolean async;
@@ -24,12 +20,6 @@ public class RegistrableTelegramBot extends TelegramBot {
     public RegistrableTelegramBot(String botToken, boolean async) {
         super(botToken);
         this.async = async;
-    }
-
-    public interface MessageListener {
-
-        void onMessage(TelegramBot bot, Message message);
-
     }
 
     public void register(MessageListener messageListener) {
@@ -62,5 +52,11 @@ public class RegistrableTelegramBot extends TelegramBot {
                 });
             }
         }
+    }
+
+    public interface MessageListener {
+
+        void onMessage(TelegramBot bot, Message message);
+
     }
 }

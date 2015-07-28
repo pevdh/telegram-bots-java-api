@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class GetUpdatesRequest implements ApiRequest<List<Update>> {
 
     private Map<String, String> args = new HashMap<>();

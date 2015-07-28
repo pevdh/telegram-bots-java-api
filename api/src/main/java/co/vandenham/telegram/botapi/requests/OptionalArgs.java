@@ -5,9 +5,6 @@ import co.vandenham.telegram.botapi.types.ReplyMarkup;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class OptionalArgs {
 
     private boolean disableWebPagePreview = false;

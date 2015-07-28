@@ -2,9 +2,6 @@ package co.vandenham.telegram.botapi.requests;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public class ApiResult<T> {
 
     @SerializedName("ok")

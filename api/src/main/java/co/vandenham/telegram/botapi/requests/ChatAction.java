@@ -1,8 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-/**
- * Created by pieter on 25-7-15.
- */
 public enum ChatAction {
     TYPING,
     UPLOAD_PHOTO,
