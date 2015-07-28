@@ -40,15 +40,8 @@ public class Audio {
         return mimeType;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
     public int getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
-        this.fileSize = fileSize;
-    }
 }

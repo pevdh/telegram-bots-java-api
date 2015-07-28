@@ -47,15 +47,8 @@ public class Sticker {
         return thumb;
     }
 
-    public void setThumb(PhotoSize thumb) {
-        this.thumb = thumb;
-    }
-
     public int getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
-        this.fileSize = fileSize;
-    }
 }

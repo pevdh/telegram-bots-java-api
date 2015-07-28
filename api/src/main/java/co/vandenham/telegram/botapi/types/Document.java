@@ -37,31 +37,17 @@ public class Document {
         return thumb;
     }
 
-    public void setThumb(PhotoSize thumb) {
-        this.thumb = thumb;
-    }
 
     public String getFileName() {
         return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 
     public String getMimeType() {
         return mimeType;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
     public int getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
-        this.fileSize = fileSize;
-    }
 }

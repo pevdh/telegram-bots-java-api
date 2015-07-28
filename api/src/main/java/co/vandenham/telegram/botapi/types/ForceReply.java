@@ -10,6 +10,7 @@ public class ForceReply implements ReplyMarkup {
 
     private static final ForceReply SELECTIVE = new ForceReply(true);
     private static final ForceReply NON_SELECTIVE = new ForceReply(false);
+
     @SerializedName("force_reply")
     private boolean forceReply = true;
     @SerializedName("selective")
