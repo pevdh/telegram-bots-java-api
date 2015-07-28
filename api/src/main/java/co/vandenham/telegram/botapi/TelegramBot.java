@@ -66,8 +66,8 @@ abstract public class TelegramBot {
      * Starts the bot.
      *
      * First, it instantiates a {@link java.util.concurrent.ExecutorService} by calling {@link TelegramBot#provideExecutorService()}.
-     * If this bot is constructed with {@code sendAsync} set to {@code true}, it instantiates an asynchronous version
-     * of {@link ApiRequestExecutor}. If it returns false, a synchronous version is instantiated.
+     * If this instance is constructed with {@code sendAsync} set to {@code true}, it instantiates a asynchronous {@link ApiRequestExecutor},
+     * otherwise a synchronous version is used.
      *
      * After this, a polling {@link java.lang.Thread} is instantiated and the bot starts polling the Telegram API.
      */

@@ -6,22 +6,13 @@ test {
         exclude 'co/vandenham/telegram/botapi/requests/*'
 }
 
-task copyJar(type: Copy) {
-    from 'build/libs'
-    into '..'
-}
-
 task copyDocs(type: Copy) {
     from 'build/docs/javadoc'
     into '../docs'
 }
 
 javadoc << {
-        copyDocs.execute()
-}
-
-jar << {
-    copyJar.execute()
+    copyDocs.execute()
 }
 
 javadoc {
