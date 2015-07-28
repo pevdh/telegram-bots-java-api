@@ -1,4 +1,4 @@
-package co.vandenham.telegram.botapi;
+package co.vandenham.telegram.botapi.requests;
 
 import co.vandenham.telegram.botapi.requests.ApiResult;
 

@@ -1,6 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.ApiException;
 import com.google.gson.Gson;
 
 import java.util.concurrent.*;

@@ -1,7 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.ApiException;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
