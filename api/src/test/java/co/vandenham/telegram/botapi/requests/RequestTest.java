@@ -1,6 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.TelegramApi;
 import org.junit.Before;
 
 /**

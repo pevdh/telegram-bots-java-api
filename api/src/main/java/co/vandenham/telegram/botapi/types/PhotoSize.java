@@ -44,7 +44,4 @@ public class PhotoSize {
         return fileSize;
     }
 
-    public void setFileSize(int fileSize) {
-        this.fileSize = fileSize;
-    }
 }

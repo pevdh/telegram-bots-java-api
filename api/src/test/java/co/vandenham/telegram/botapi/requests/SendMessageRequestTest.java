@@ -1,6 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.TelegramApi;
 import co.vandenham.telegram.botapi.types.Message;
 import co.vandenham.telegram.botapi.types.ReplyKeyboardMarkup;
 import org.junit.Test;
