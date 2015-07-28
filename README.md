@@ -4,6 +4,4 @@ TelegramBots4Java is a Java implementation of the Telegram Bot API
 
 See [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api)
 
-## TODO
-
-- [ ] Write documentation.
+For now, you can check out the [EchoBot example](https://github.com/pevdh/TelegramBots4Java/tree/master/EchoBot/src/main/java/co/vandenham/telegram/botapi/examples) and the [Javadocs](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/index.html)
