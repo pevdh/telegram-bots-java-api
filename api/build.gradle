@@ -2,7 +2,8 @@
 archivesBaseName = project.projectName
 
 test {
-    exclude 'co/vandenham/telegram/botapi/requests/*'
+    if (System.getenv("TOKEN") == null || System.getenv("CHAT_ID") == null)
+        exclude 'co/vandenham/telegram/botapi/requests/*'
 }
 
 task copyJar(type: Copy) {

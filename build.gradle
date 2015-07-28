@@ -1,5 +1,9 @@
 project.ext.set("projectName", "TelegramBots4Java")
 
+task getEnv {
+    println "$System.env.TOKEN"
+}
+
 subprojects {
 
     apply plugin: 'java'

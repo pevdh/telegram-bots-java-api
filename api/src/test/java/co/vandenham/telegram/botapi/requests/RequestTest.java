@@ -7,8 +7,8 @@ import org.junit.Before;
  */
 public class RequestTest {
 
-    protected final static int CHAT_ID = -1;
-    protected final static String TOKEN = "TOKEN";
+    protected final static int CHAT_ID = Integer.valueOf(System.getenv("CHAT_ID"));
+    protected final static String TOKEN = System.getenv("TOKEN");
     protected TelegramApi api;
     protected ApiRequestExecutor requestExecutor;
 

@@ -14,9 +14,9 @@ public class SendPhotoRequestTest extends RequestTest {
 
     @Test
     public void testMakeRequest() throws Exception {
-        File photo = new File("/home/pieter/Pictures/infoweb.png");
+        File photo = new File(getClass().getClassLoader().getResource("logo.png").getPath());
 
-        OptionalArgs optionalArgs = new OptionalArgs().caption("Lol...");
+        OptionalArgs optionalArgs = new OptionalArgs().caption("Sent you a photo...");
         SendPhotoRequest request = new SendPhotoRequest(4663724, photo, optionalArgs);
         Message message = requestExecutor.execute(api, request).getResult();
         assertTrue(message.getMessageId() > 0);
