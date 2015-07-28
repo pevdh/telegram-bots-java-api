@@ -10,10 +10,7 @@ import java.io.File;
 import java.lang.annotation.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -41,7 +38,8 @@ abstract public class TelegramBot {
     private boolean sendAsync = true;
 
     private Method defaultHandler;
-    private Map<String, Method> commandHandlerMapping = new HashMap<>();
+
+    private List<MessageFilter> messageHandlers = new ArrayList<>();
 
     /**
      * Convenience constructor for {@code TelegramBot(botToken, true)}
@@ -91,14 +89,15 @@ abstract public class TelegramBot {
     private void indexCommandHandlers() {
         Method[] declaredMethods = this.getClass().getDeclaredMethods();
         for (Method method : declaredMethods) {
-            if (method.isAnnotationPresent(CommandHandler.class)) {
+            if (method.isAnnotationPresent(MessageHandler.class)) {
+                MessageHandler messageHandlerAnnotation = method.getAnnotation(MessageHandler.class);
+                messageHandlers.add(new MessageHandlerFilter(messageHandlerAnnotation.contentTypes(), method));
+            } else if (method.isAnnotationPresent(CommandHandler.class)) {
                 CommandHandler commandHandlerAnnotation = method.getAnnotation(CommandHandler.class);
-                for (String command : commandHandlerAnnotation.value()) {
-                    commandHandlerMapping.put(command, method);
-                }
-            }
-            if (method.isAnnotationPresent(DefaultHandler.class))
+                messageHandlers.add(new CommandHandlerFilter(commandHandlerAnnotation.value(), method));
+            } else if (method.isAnnotationPresent(DefaultHandler.class)) {
                 defaultHandler = method;
+            }
         }
     }
 
@@ -470,38 +469,30 @@ abstract public class TelegramBot {
                 }
             });
 
-            final String potentialCommand = extractCommand(message);
+            notifyMessageHandlers(message);
+        }
+    }
 
-            final Method handler;
+    private void notifyMessageHandlers(final Message message) {
+        Method handler = null;
+        for (MessageFilter filter : messageHandlers) {
+            if (filter.valid(message))
+                handler = filter.getHandler();
+        }
 
-            if (potentialCommand != null && commandHandlerMapping.containsKey(potentialCommand)) {
-                handler = commandHandlerMapping.get(potentialCommand);
-            } else {
-                handler = defaultHandler;
+        if (handler == null)
+            handler = defaultHandler;
+
+        final Method handlerToExecute = handler;
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                notifyMessageHandler(handlerToExecute, message);
             }
-
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    notifyCommandHandler(handler, message);
-                }
-            });
-        }
+        });
     }
 
-    private String extractCommand(Message message) {
-        if (isCommand(message)) {
-            String text = message.getText();
-            return text.split(" ")[0].split("@")[0].substring(1);
-        }
-        return null;
-    }
-
-    private boolean isCommand(Message message) {
-        return message.getType() == Message.Type.TEXT && message.getText().startsWith("/");
-    }
-
-    private void notifyCommandHandler(Method handler, Message message) {
+    private void notifyMessageHandler(Method handler, Message message) {
         try {
             handler.invoke(this, message);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -509,6 +500,12 @@ abstract public class TelegramBot {
         }
     }
 
+    @Documented
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    protected @interface MessageHandler {
+        Message.Type[] contentTypes() default Message.Type.TEXT;
+    }
 
     @Documented
     @Target(ElementType.METHOD)
@@ -522,6 +519,65 @@ abstract public class TelegramBot {
     @Retention(RetentionPolicy.RUNTIME)
     protected @interface DefaultHandler {
 
+    }
+
+    private interface MessageFilter {
+        boolean valid(Message message);
+        Method getHandler();
+    }
+
+    private static class MessageHandlerFilter implements MessageFilter {
+
+        private Method handler;
+        private List<Message.Type> contentTypes;
+
+        public MessageHandlerFilter(Message.Type[] contentTypes, Method handler) {
+            this.contentTypes = Arrays.asList(contentTypes);
+            this.handler = handler;
+        }
+
+        @Override
+        public boolean valid(Message message) {
+            return contentTypes.contains(message.getType());
+        }
+
+        @Override
+        public Method getHandler() {
+            return handler;
+        }
+    }
+
+    private static class CommandHandlerFilter implements MessageFilter {
+
+        private Method handler;
+        private List<String> commands;
+
+        public CommandHandlerFilter(String[] commands, Method handler) {
+            this.handler = handler;
+            this.commands = Arrays.asList(commands);
+        }
+
+        @Override
+        public boolean valid(Message message) {
+            return message.getType() == Message.Type.TEXT && commands.contains(extractCommand(message));
+        }
+
+        private String extractCommand(Message message) {
+            if (isCommand(message)) {
+                String text = message.getText();
+                return text.split(" ")[0].split("@")[0].substring(1);
+            }
+            return null;
+        }
+
+        private boolean isCommand(Message message) {
+            return message.getType() == Message.Type.TEXT && message.getText().startsWith("/");
+        }
+
+        @Override
+        public Method getHandler() {
+            return null;
+        }
     }
 
     private class UpdatePoller implements Runnable {
