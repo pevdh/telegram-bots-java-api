@@ -1,3 +1,18 @@
+project.ext.set("projectName", "TelegramBots4Java")
+
+apply plugin: 'java'
+
+task copyDocs(type: Copy) {
+    from javadoc //'api/build/docs/javadoc'
+    into 'docs'
+}
+
+javadoc {
+    doLast {
+        copyDocs.execute()
+    }
+}
+
 subprojects {
 
     apply plugin: 'java'

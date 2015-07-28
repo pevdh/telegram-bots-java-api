@@ -38,10 +38,7 @@ public class Chat {
     }
 
     public User asUser() {
-        User user = new User(id, firstName);
-        user.setUsername(username);
-        user.setLastName(lastName);
-        return user;
+        return new User(id, firstName, username, lastName);
     }
 
     public GroupChat asGroupChat() {

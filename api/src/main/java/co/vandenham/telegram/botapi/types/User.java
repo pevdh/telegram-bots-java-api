@@ -24,9 +24,11 @@ public class User {
 
     }
 
-    public User(int id, String firstName) {
+    public User(int id, String firstName, String lastName, String username) {
         this.id = id;
         this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
     }
 
     public int getId() {

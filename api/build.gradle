@@ -1,8 +1,23 @@
 
-archivesBaseName = 'TelegramBots4Java'
+archivesBaseName = project.projectName
 
 test {
     exclude 'co/vandenham/telegram/botapi/requests/*'
+}
+
+task copyDocs(type: Copy) {
+    from 'build/docs/javadoc'
+    into '../docs'
+}
+
+javadoc << {
+        copyDocs.execute()
+}
+
+javadoc {
+    options.windowTitle project.projectName
+    options.docTitle project.projectName
+    options.links "http://docs.oracle.com/javase/7/docs/api/"
 }
 
 dependencies {

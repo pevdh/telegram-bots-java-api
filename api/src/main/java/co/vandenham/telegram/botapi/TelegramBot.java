@@ -198,7 +198,7 @@ abstract public class TelegramBot {
      *
      * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id.
      * @param chatAction The target {@link ChatAction}
-     * @return
+     * @return True if the request was successful
      */
     public final ApiResponse<Boolean> sendChatAction(int chatId, ChatAction chatAction) {
         return requestExecutor.execute(api, new SendChatActionRequest(chatId, chatAction));
