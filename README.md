@@ -3,13 +3,14 @@
 ##### TelegramBots4Java is a Java implementation of the [Telegram Bot API](https://core.telegram.org/bots/api)
 
 This API is designed to be *extensible*, while preserving *simplicity* and *conciseness*.
-It provides [core classes](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/co/vandenham/telegram/botapi/requests/package-summary.html) to interact with the Telegram Bot API, and it encapsulates these classes in [one simple, extensible class](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/co/vandenham/telegram/botapi/TelegramBot.html). However, nothing holds you back to use the [core classes](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/co/vandenham/telegram/botapi/requests/package-summary.html) directly.
+It provides [core classes](https://cdn.rawgit.com/pevdh/telegram-bots-java-api/master/docs/co/vandenham/telegram/botapi/requests/package-summary.html) to interact with the Telegram Bot API, and it encapsulates these classes in [one simple, extensible class](https://cdn.rawgit.com/pevdh/telegram-bots-java-api/master/docs/co/vandenham/telegram/botapi/TelegramBot.html). 
+However, nothing holds you back to use the [core classes](https://cdn.rawgit.com/pevdh/telegram-bots-java-api/master/docs/co/vandenham/telegram/botapi/requests/package-summary.html) directly.
 
 ## How to obtain a Jar
 
 ### Unix
 ```
-$ git clone https://github.com/pevdh/TelegramBots4Java.git
+$ git clone https://github.com/pevdh/telegram-bots-java-api.git
 $ cd TelegramBots4Java/
 $ ./gradlew jar
 ```
@@ -17,7 +18,7 @@ You'll find the .jar file in the api/build/libs directory.
 
 ### Windows
 ```
-$ git clone https://github.com/pevdh/TelegramBots4Java.git
+$ git clone https://github.com/pevdh/telegram-bots-java-api.git
 $ cd TelegramBots4Java/
 $ gradlew.bat jar
 ```
@@ -61,6 +62,6 @@ public class EchoBot extends TelegramBot {
 }
 ```
 ### Further reference
-This project has [Javadocs](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/index.html).
+This project has [Javadocs](https://cdn.rawgit.com/pevdh/telegram-bots-java-api/master/docs/index.html).
 
-*TelegramBot.java* provides a good entry point into this API. You can have a look at the [Javadoc reference](https://cdn.rawgit.com/pevdh/TelegramBots4Java/master/docs/co/vandenham/telegram/botapi/TelegramBot.html) for this class, or look at the [source code](https://github.com/pevdh/TelegramBots4Java/blob/master/api/src/main/java/co/vandenham/telegram/botapi/TelegramBot.java) directly.
+*TelegramBot.java* provides a good entry point into this API. You can have a look at the [Javadoc reference](https://cdn.rawgit.com/pevdh/telegram-bots-java-api/master/docs/co/vandenham/telegram/botapi/TelegramBot.html) for this class, or look at the [source code](https://github.com/pevdh/TelegramBots4Java/blob/master/api/src/main/java/co/vandenham/telegram/botapi/TelegramBot.java) directly.
