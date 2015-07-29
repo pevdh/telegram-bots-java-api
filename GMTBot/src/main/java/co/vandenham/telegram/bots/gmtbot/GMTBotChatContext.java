@@ -100,7 +100,7 @@ public class GMTBotChatContext extends ChatContext {
     @CommandHandler({"start", "help"})
     public void handleHelp(Message message) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Hi there! My name is GMTBot.");
+        builder.append("Hi there! My name is GMTBot. ");
         builder.append("My job is to keep you up to date with the different timezones! ");
         builder.append("The currently available commands are:\n\n");
         builder.append("  -  /times <optional timezone>  -- Shows you the current times for the configured timezones,");
