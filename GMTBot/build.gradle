@@ -1,4 +1,25 @@
+archivesBaseName = 'gmtbot'
+version = '1.0'
 
 dependencies {
     compile project(':api')
+}
+
+jar {
+    from {
+
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'co.vandenham.telegram.bots.gmtbot.GMTBotChatContext'
+    }
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
 }

@@ -1,1 +1,3 @@
 include ':api', ':EchoBot'
+include 'GMTBot'
+

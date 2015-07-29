@@ -3,6 +3,7 @@ package co.vandenham.telegram.botapi;
 import co.vandenham.telegram.botapi.types.Message;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChatContextTelegramBot extends TelegramBot {
@@ -17,6 +18,15 @@ public class ChatContextTelegramBot extends TelegramBot {
     public ChatContextTelegramBot(String botToken, AbstractChatContextFactory chatContextFactory, boolean sendAsync) {
         super(botToken);
         this.chatContextFactory = chatContextFactory;
+    }
+
+    public void add(ChatContext context) {
+        contextMap.put(context.getChatId(), context);
+    }
+
+    public void addAll(List<? extends ChatContext> contextList) {
+        for (ChatContext chatContext : contextList)
+            add(chatContext);
     }
 
     @Override
