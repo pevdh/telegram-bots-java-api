@@ -7,11 +7,7 @@ import co.vandenham.telegram.botapi.types.User;
 import co.vandenham.telegram.botapi.types.UserProfilePhotos;
 
 import java.io.File;
-import java.lang.annotation.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,11 +33,9 @@ abstract public class TelegramBot {
     private ApiRequestExecutor requestExecutor;
     private ExecutorService executorService;
 
+    private HandlerNotifier handlerNotifier;
     private boolean sendAsync = true;
 
-    private Method defaultHandler;
-
-    private List<MessageFilter> messageHandlers = new ArrayList<>();
 
     /**
      * Convenience constructor for {@code TelegramBot(botToken, true)}
@@ -59,6 +53,7 @@ abstract public class TelegramBot {
      */
     public TelegramBot(String botToken, boolean sendAsync) {
         api = new TelegramApi(botToken);
+        handlerNotifier = new HandlerNotifier(this);
         this.sendAsync = sendAsync;
     }
 
@@ -74,7 +69,6 @@ abstract public class TelegramBot {
     public final void start() {
         logger.info("Starting");
 
-        indexCommandHandlers();
         executorService = provideExecutorService();
         requestExecutor = sendAsync ?
                 ApiRequestExecutor.getAsynchronousExecutor() : ApiRequestExecutor.getSynchronousExecutor();
@@ -83,21 +77,11 @@ abstract public class TelegramBot {
 
         pollThread = new Thread(new UpdatePoller());
         pollThread.start();
+        onStart();
     }
 
-    private void indexCommandHandlers() {
-        Method[] declaredMethods = this.getClass().getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (method.isAnnotationPresent(MessageHandler.class)) {
-                MessageHandler messageHandlerAnnotation = method.getAnnotation(MessageHandler.class);
-                messageHandlers.add(new MessageHandlerFilter(messageHandlerAnnotation.contentTypes(), method));
-            } else if (method.isAnnotationPresent(CommandHandler.class)) {
-                CommandHandler commandHandlerAnnotation = method.getAnnotation(CommandHandler.class);
-                messageHandlers.add(new CommandHandlerFilter(commandHandlerAnnotation.value(), method));
-            } else if (method.isAnnotationPresent(DefaultHandler.class)) {
-                defaultHandler = method;
-            }
-        }
+    protected void onStart() {
+
     }
 
     /**
@@ -111,6 +95,11 @@ abstract public class TelegramBot {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        onStop();
+    }
+
+    protected void onStop() {
+
     }
 
     /**
@@ -467,115 +456,12 @@ abstract public class TelegramBot {
                     onMessage(message);
                 }
             });
-
-            notifyMessageHandlers(message);
-        }
-    }
-
-    private void notifyMessageHandlers(final Message message) {
-        Method handler = null;
-        for (MessageFilter filter : messageHandlers) {
-            if (filter.valid(message))
-                handler = filter.getHandler();
-        }
-
-        if (handler == null)
-            handler = defaultHandler;
-
-        final Method handlerToExecute = handler;
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                notifyMessageHandler(handlerToExecute, message);
-            }
-        });
-    }
-
-    private void notifyMessageHandler(Method handler, Message message) {
-        try {
-            handler.invoke(this, message);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            logger.log(Level.SEVERE, "An exception occurred while trying to invoke CommandHandler", e);
-        }
-    }
-
-    @Documented
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    protected @interface MessageHandler {
-        Message.Type[] contentTypes() default Message.Type.TEXT;
-    }
-
-    @Documented
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    protected @interface CommandHandler {
-        String[] value();
-    }
-
-    @Documented
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    protected @interface DefaultHandler {
-
-    }
-
-    private interface MessageFilter {
-        boolean valid(Message message);
-        Method getHandler();
-    }
-
-    private static class MessageHandlerFilter implements MessageFilter {
-
-        private Method handler;
-        private List<Message.Type> contentTypes;
-
-        public MessageHandlerFilter(Message.Type[] contentTypes, Method handler) {
-            this.contentTypes = Arrays.asList(contentTypes);
-            this.handler = handler;
-        }
-
-        @Override
-        public boolean valid(Message message) {
-            return contentTypes.contains(message.getType());
-        }
-
-        @Override
-        public Method getHandler() {
-            return handler;
-        }
-    }
-
-    private static class CommandHandlerFilter implements MessageFilter {
-
-        private Method handler;
-        private List<String> commands;
-
-        public CommandHandlerFilter(String[] commands, Method handler) {
-            this.handler = handler;
-            this.commands = Arrays.asList(commands);
-        }
-
-        @Override
-        public boolean valid(Message message) {
-            return message.getType() == Message.Type.TEXT && commands.contains(extractCommand(message));
-        }
-
-        private String extractCommand(Message message) {
-            if (isCommand(message)) {
-                String text = message.getText();
-                return text.split(" ")[0].split("@")[0].substring(1);
-            }
-            return null;
-        }
-
-        private boolean isCommand(Message message) {
-            return message.getType() == Message.Type.TEXT && message.getText().startsWith("/");
-        }
-
-        @Override
-        public Method getHandler() {
-            return null;
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    handlerNotifier.notifyHandlers(message);
+                }
+            });
         }
     }
 

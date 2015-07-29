@@ -1,5 +1,8 @@
 package co.vandenham.telegram.botapi.examples;
 
+import co.vandenham.telegram.botapi.CommandHandler;
+import co.vandenham.telegram.botapi.DefaultHandler;
+import co.vandenham.telegram.botapi.MessageHandler;
 import co.vandenham.telegram.botapi.TelegramBot;
 import co.vandenham.telegram.botapi.types.Message;
 
@@ -11,6 +14,11 @@ public class EchoBot extends TelegramBot {
 
     public EchoBot(boolean async) {
         super(System.getenv("TOKEN"), async);
+    }
+
+    public static void main(String[] args) {
+        TelegramBot bot = new EchoBot(true);
+        bot.start();
     }
 
     @CommandHandler({"start", "help"})
@@ -27,10 +35,5 @@ public class EchoBot extends TelegramBot {
     @DefaultHandler
     public void handleDefault(Message message) {
         replyTo(message, "Say what?");
-    }
-
-    public static void main(String[] args) {
-        TelegramBot bot = new EchoBot(true);
-        bot.start();
     }
 }
