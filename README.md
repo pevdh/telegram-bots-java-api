@@ -8,21 +8,16 @@ However, nothing holds you back to use the [core classes](https://cdn.rawgit.com
 
 ## How to obtain a Jar
 
-### Unix
+- [Download the most recent release](https://github.com/pevdh/telegram-bots-java-api/releases)
+
+- Compile from source
+
 ```
 $ git clone https://github.com/pevdh/telegram-bots-java-api.git
-$ cd TelegramBots4Java/
-$ ./gradlew jar
+$ cd telegram-bots-java-api/
+$ ./gradlew :api:jar
 ```
 You'll find the .jar file in the api/build/libs directory.
-
-### Windows
-```
-$ git clone https://github.com/pevdh/telegram-bots-java-api.git
-$ cd TelegramBots4Java/
-$ gradlew.bat jar
-```
-You'll find the .jar file in the api\build\libs directory.
 
 ## How to use
 
