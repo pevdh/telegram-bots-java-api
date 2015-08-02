@@ -158,6 +158,22 @@ public class ChatContext {
         return bot.sendVideo(chatId, videoFileId, optionalArgs);
     }
 
+    public ApiResponse<Message> sendVoice(int chatId, File voiceFile) {
+        return bot.sendVoice(chatId, voiceFile);
+    }
+
+    public ApiResponse<Message> sendVoice(int chatId, File voiceFile, OptionalArgs optionalArgs) {
+        return bot.sendVoice(chatId, voiceFile, optionalArgs);
+    }
+
+    public ApiResponse<Message> sendVoice(int chatId, String voiceFileId) {
+        return bot.sendVoice(chatId, voiceFileId);
+    }
+
+    public ApiResponse<Message> sendVoice(int chatId, String voiceFileId, OptionalArgs optionalArgs) {
+        return bot.sendVoice(chatId, voiceFileId, optionalArgs);
+    }
+
     public ApiResponse<Message> replyTo(Message message, String text) {
         return bot.sendMessage(chatId, text, new OptionalArgs().replyToMessageId(message.getMessageId()));
     }

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  * This class represents a TelegramBot.
- *
+ * <p/>
  * To use it, use any of the available subclasses or subclass it yourself.
  */
 abstract public class TelegramBot {
@@ -48,7 +48,7 @@ abstract public class TelegramBot {
      * Constructs a TelegramBot using the provided {@code botToken}, If {@code sendAsync} is {@code true},
      * the bot invokes all {@code sendXXX} methods asynchronously.
      *
-     * @param botToken The token provided by @BotFather
+     * @param botToken  The token provided by @BotFather
      * @param sendAsync Whether this bot should invoke {@code sendXXX} methods asynchronously.
      */
     public TelegramBot(String botToken, boolean sendAsync) {
@@ -59,11 +59,11 @@ abstract public class TelegramBot {
 
     /**
      * Starts the bot.
-     *
+     * <p/>
      * First, it instantiates a {@link java.util.concurrent.ExecutorService} by calling {@link TelegramBot#provideExecutorService()}.
      * If this instance is constructed with {@code sendAsync} set to {@code true}, it instantiates a asynchronous {@link ApiRequestExecutor},
      * otherwise a synchronous version is used.
-     *
+     * <p/>
      * After this, a polling {@link java.lang.Thread} is instantiated and the bot starts polling the Telegram API.
      */
     public final void start() {
@@ -104,7 +104,7 @@ abstract public class TelegramBot {
 
     /**
      * Instantiates and returns an {@link ExecutorService}.
-     *
+     * <p/>
      * By default, {@link java.util.concurrent.Executors#newCachedThreadPool()} is used.
      * This method can safely be overridden to adjust this behaviour.
      * This method can safely be overridden to return null, but if you decide to do so, {@link TelegramBot#notifyNewMessages(List)}
@@ -119,12 +119,11 @@ abstract public class TelegramBot {
     /**
      * Forwards a message with ID {@code messageId} from {@code fromChatId} to {@code chatId}.
      *
-     * @see <a href="https://core.telegram.org/bots/api#forwardmessage">https://core.telegram.org/bots/api#forwardmessage</a>
-     *
-     * @param chatId Unique identifier for the message recipient — User or GroupChat id
+     * @param chatId     Unique identifier for the message recipient — User or GroupChat id
      * @param fromChatId Unique identifier for the chat where the original message was sent — User or GroupChat id
-     * @param messageId Unique message identifier
+     * @param messageId  Unique message identifier
      * @return An {@code ApiResponse} with the sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#forwardmessage">https://core.telegram.org/bots/api#forwardmessage</a>
      */
     public final ApiResponse<Message> forwardMessage(int chatId, int fromChatId, int messageId) {
         return requestExecutor.execute(api, new ForwardMessageRequest(chatId, fromChatId, messageId));
@@ -133,9 +132,8 @@ abstract public class TelegramBot {
     /**
      * A simple method for testing your bot's auth token. Requires no parameters. Returns basic information about the bot in form of a User object.
      *
-     * @see <a href="https://core.telegram.org/bots/api#getme">https://core.telegram.org/bots/api#getme</a>
-     *
      * @return this bot's information, in the form of a {@code User} wrapped in a {@code ApiResponse}
+     * @see <a href="https://core.telegram.org/bots/api#getme">https://core.telegram.org/bots/api#getme</a>
      */
     public final ApiResponse<User> getMe() {
         return requestExecutor.execute(api, new GetMeRequest());
@@ -150,15 +148,14 @@ abstract public class TelegramBot {
 
     /**
      * Returns a {@link UserProfilePhotos} for a user.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#getuserprofilephotos">https://core.telegram.org/bots/api#getuserprofilephotos</a>
-     * @see OptionalArgs
-     *
-     * @param userId Unique identifier of the target user
+     * @param userId       Unique identifier of the target user
      * @param optionalArgs Any optional arguments for this method
      * @return The requested {@link UserProfilePhotos}
+     * @see <a href="https://core.telegram.org/bots/api#getuserprofilephotos">https://core.telegram.org/bots/api#getuserprofilephotos</a>
+     * @see OptionalArgs
      */
     public final ApiResponse<UserProfilePhotos> getUserProfilePhotos(int userId, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new GetUserProfilePhotosRequest(userId, optionalArgs));
@@ -172,18 +169,20 @@ abstract public class TelegramBot {
     }
 
     /**
-     * Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message.
-     * For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as Document ({@link TelegramBot#sendDocument(int, File, OptionalArgs)}).
-     * Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+     * Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .mp3 format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+     *
+     * For backward compatibility, when the fields title and performer are both empty and the mime-type of the file
+     * to be sent is not audio/mpeg, the file will be sent as a playable voice message.
+     * For this to work, the audio must be in an .ogg file encoded with OPUS.
+     * This behavior will be phased out in the future. For sending voice messages, use the sendVoice method instead.
      *
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendaudio">https://core.telegram.org/bots/api#sendaudio</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param audioFile Audio {@link File} to send
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param audioFile    Audio {@link File} to send
      * @param optionalArgs Any optional arguments for this method
      * @return The sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendaudio">https://core.telegram.org/bots/api#sendaudio</a>
      */
     public final ApiResponse<Message> sendAudio(int chatId, File audioFile, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFile, optionalArgs));
@@ -209,11 +208,10 @@ abstract public class TelegramBot {
      * Use this method when you need to tell the user that something is happening on the bot's side.
      * The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status).
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendchataction">https://core.telegram.org/bots/api#sendchataction</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id.
+     * @param chatId     Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id.
      * @param chatAction The target {@link ChatAction}
      * @return True if the request was successful
+     * @see <a href="https://core.telegram.org/bots/api#sendchataction">https://core.telegram.org/bots/api#sendchataction</a>
      */
     public final ApiResponse<Boolean> sendChatAction(int chatId, ChatAction chatAction) {
         return requestExecutor.execute(api, new SendChatActionRequest(chatId, chatAction));
@@ -229,15 +227,14 @@ abstract public class TelegramBot {
     /**
      * Use this method to send general files. On success, the sent Message is returned.
      * Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#senddocument">https://core.telegram.org/bots/api#senddocument</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
      * @param documentFile File to send
      * @param optionalArgs Any optional arguments
      * @return The sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#senddocument">https://core.telegram.org/bots/api#senddocument</a>
      */
     public final ApiResponse<Message> sendDocument(int chatId, File documentFile, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFile, optionalArgs));
@@ -268,16 +265,15 @@ abstract public class TelegramBot {
 
     /**
      * Use this method to send point on the map.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendlocation">https://core.telegram.org/bots/api#sendlocation</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param latitude Latitude of location
-     * @param longitude Longitude of location
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param latitude     Latitude of location
+     * @param longitude    Longitude of location
      * @param optionalArgs Any optional arguments
      * @return the sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendlocation">https://core.telegram.org/bots/api#sendlocation</a>
      */
     public final ApiResponse<Message> sendLocation(int chatId, float latitude, float longitude, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendLocationRequest(chatId, latitude, longitude, optionalArgs));
@@ -292,15 +288,14 @@ abstract public class TelegramBot {
 
     /**
      * Use this method to send text messages.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendmessage">https://core.telegram.org/bots/api#sendmessage</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param text Text of the message to be sent
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param text         Text of the message to be sent
      * @param optionalArgs Any optional arguments
      * @return the sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendmessage">https://core.telegram.org/bots/api#sendmessage</a>
      */
     public final ApiResponse<Message> sendMessage(int chatId, String text, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendMessageRequest(chatId, text, optionalArgs));
@@ -316,12 +311,11 @@ abstract public class TelegramBot {
     /**
      * Use this method to send photos.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendphoto">https://core.telegram.org/bots/api#sendphoto</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param photoFile Photo to send
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param photoFile    Photo to send
      * @param optionalArgs Any optional arguments
      * @return The sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendphoto">https://core.telegram.org/bots/api#sendphoto</a>
      */
     public final ApiResponse<Message> sendPhoto(int chatId, File photoFile, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFile, optionalArgs));
@@ -352,15 +346,14 @@ abstract public class TelegramBot {
 
     /**
      * Use this method to send .webp stickers.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendsticker">https://core.telegram.org/bots/api#sendsticker</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param stickerFile Sticker to send.
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param stickerFile  Sticker to send.
      * @param optionalArgs Any optional arguments
      * @return The sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendsticker">https://core.telegram.org/bots/api#sendsticker</a>
      */
     public final ApiResponse<Message> sendSticker(int chatId, File stickerFile, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFile, optionalArgs));
@@ -393,15 +386,14 @@ abstract public class TelegramBot {
      * Use this method to send video files,
      * Telegram clients support mp4 videos (other formats may be sent as Document ({@link TelegramBot#sendDocument(int, File, OptionalArgs)})).
      * Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
-     *
+     * <p/>
      * For any optional arguments, refer to the Telegram documentation.
      *
-     * @see <a href="https://core.telegram.org/bots/api#sendvideo">https://core.telegram.org/bots/api#sendvideo</a>
-     *
-     * @param chatId Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
-     * @param videoFile Video to send
+     * @param chatId       Unique identifier for the message recipient - {@link User} or {@link co.vandenham.telegram.botapi.types.GroupChat} id
+     * @param videoFile    Video to send
      * @param optionalArgs Any optional arguments.
      * @return The sent {@link Message}
+     * @see <a href="https://core.telegram.org/bots/api#sendvideo">https://core.telegram.org/bots/api#sendvideo</a>
      */
     public final ApiResponse<Message> sendVideo(int chatId, File videoFile, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFile, optionalArgs));
@@ -421,6 +413,49 @@ abstract public class TelegramBot {
      */
     public final ApiResponse<Message> sendVideo(int chatId, String videoFileId, OptionalArgs optionalArgs) {
         return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFileId, optionalArgs));
+    }
+
+    /**
+     * @see TelegramBot#sendVoice(int, File, OptionalArgs)
+     */
+    public final ApiResponse<Message> sendVoice(int chatId, File voiceFile) {
+        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFile));
+    }
+
+    /**
+     * Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message.
+     * For this to work, your audio must be in an .ogg file encoded with OPUS (other formats may be sent as Audio or Document).
+     * On success, the sent Message is returned.
+     * Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+     *
+     * For any optional arguments, refer to the Telegram documentation.
+     *
+     * @param chatId       Unique identifier for the message recipient — User or GroupChat id
+     * @param voiceFile    Audio file to send. You can either pass a file_id as String to resend an audio
+     *                     that is already on the Telegram servers, or upload a new audio file using multipart/form-data.
+     * @param optionalArgs Any optional arguments
+     * @return the sent {@link Message}
+     */
+    public final ApiResponse<Message> sendVoice(int chatId, File voiceFile, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFile, optionalArgs));
+    }
+
+    /**
+     * This version uses a String rather than a File.
+     *
+     * @see TelegramBot#sendVoice(int, File, OptionalArgs)
+     */
+    public final ApiResponse<Message> sendVoice(int chatId, String voiceFileId) {
+        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFileId));
+    }
+
+    /**
+     * This version uses a String rather than a File
+     *
+     * @see TelegramBot#sendVoice(int, File, OptionalArgs)
+     */
+    public final ApiResponse<Message> sendVoice(int chatId, String voiceFileId, OptionalArgs optionalArgs) {
+        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFileId, optionalArgs));
     }
 
     /**

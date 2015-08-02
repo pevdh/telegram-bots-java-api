@@ -1,5 +1,7 @@
 
 archivesBaseName = project.projectName
+sourceCompatibility = 1.7
+version = '1.1'
 
 test {
     if (System.getenv("TOKEN") == null || System.getenv("CHAT_ID") == null)
@@ -19,6 +21,7 @@ javadoc {
     options.windowTitle project.projectName
     options.docTitle project.projectName
     options.links "http://docs.oracle.com/javase/7/docs/api/"
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 dependencies {
