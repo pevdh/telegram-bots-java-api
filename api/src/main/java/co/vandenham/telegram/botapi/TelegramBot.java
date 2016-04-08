@@ -5,6 +5,9 @@ import co.vandenham.telegram.botapi.types.Message;
 import co.vandenham.telegram.botapi.types.Update;
 import co.vandenham.telegram.botapi.types.User;
 import co.vandenham.telegram.botapi.types.UserProfilePhotos;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MarkerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,8 +15,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class represents a TelegramBot.
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  */
 abstract public class TelegramBot {
 
-    private static final Logger logger = Logger.getLogger(TelegramBot.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
     private TelegramApi api;
 
@@ -508,7 +509,7 @@ abstract public class TelegramBot {
                 try {
                     poll();
                 } catch (ApiException e) {
-                    logger.log(Level.SEVERE, "An exception occurred while polling Telegram.", e);
+                    logger.error(MarkerFactory.getMarker("SEVERE"), "An exception occurred while polling Telegram.", e);
                     running.set(false);
                 }
             }

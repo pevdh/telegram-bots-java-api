@@ -1,13 +1,14 @@
 package co.vandenham.telegram.botapi.requests;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
 abstract public class ApiRequestExecutor {
 
-    private static final Logger log = Logger.getLogger(ApiRequestExecutor.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ApiRequestExecutor.class.getName());
     private static final Gson gson = new Gson();
 
     private static final ApiRequestExecutor synchronousExecutor = new SyncApiRequestExecutor();
