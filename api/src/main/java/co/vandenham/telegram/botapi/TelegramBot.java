@@ -59,6 +59,14 @@ abstract public class TelegramBot {
     }
 
     /**
+     * Check whether the bot is running by looking at the state of its polling thread as well as the running variable
+     *
+     */
+    public boolean isRunning() {
+        return (pollThread != null) && (running.get() == true) && pollThread.isAlive();
+    }
+
+    /**
      * Starts the bot.
      * <p/>
      * First, it instantiates a {@link java.util.concurrent.ExecutorService} by calling {@link TelegramBot#provideExecutorService()}.
@@ -68,17 +76,21 @@ abstract public class TelegramBot {
      * After this, a polling {@link java.lang.Thread} is instantiated and the bot starts polling the Telegram API.
      */
     public final void start() {
-        logger.info("Starting");
+        if (running.get()) {
+            logger.debug("Already started");
+        } else {
+            logger.info("Starting");
 
-        executorService = provideExecutorService();
-        requestExecutor = sendAsync ?
-                ApiRequestExecutor.getAsynchronousExecutor() : ApiRequestExecutor.getSynchronousExecutor();
+            executorService = provideExecutorService();
+            requestExecutor = sendAsync ?
+                    ApiRequestExecutor.getAsynchronousExecutor() : ApiRequestExecutor.getSynchronousExecutor();
 
-        running.set(true);
+            running.set(true);
 
-        pollThread = new Thread(new UpdatePoller());
-        pollThread.start();
-        onStart();
+            pollThread = new Thread(new UpdatePoller());
+            pollThread.start();
+            onStart();
+        }
     }
 
     protected void onStart() {
@@ -89,10 +101,11 @@ abstract public class TelegramBot {
      * Stops the bot and joins the polling {@link Thread}.
      */
     public final void stop() {
+        logger.info("Stopping");
         running.set(false);
 
         try {
-            pollThread.join();
+            if (pollThread != null && pollThread.isAlive()) pollThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
