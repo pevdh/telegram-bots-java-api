@@ -1,10 +1,7 @@
 package co.vandenham.telegram.botapi;
 
 import co.vandenham.telegram.botapi.requests.*;
-import co.vandenham.telegram.botapi.types.Message;
-import co.vandenham.telegram.botapi.types.Update;
-import co.vandenham.telegram.botapi.types.User;
-import co.vandenham.telegram.botapi.types.UserProfilePhotos;
+import co.vandenham.telegram.botapi.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -121,7 +118,7 @@ abstract public class TelegramBot {
      * <p/>
      * By default, {@link java.util.concurrent.Executors#newCachedThreadPool()} is used.
      * This method can safely be overridden to adjust this behaviour.
-     * This method can safely be overridden to return null, but if you decide to do so, {@link TelegramBot#notifyNewMessages(List)}
+     * This method can safely be overridden to return null, but if you decide to do so, {@link TelegramBot#notifyNewUpdates(List)}
      * <b>must</b> be overridden to avoid a NPE.
      *
      * @return An instantiated {@link ExecutorService}
@@ -298,6 +295,41 @@ abstract public class TelegramBot {
      */
     public final ApiResponse<Message> sendMessage(int chatId, String text) {
         return requestExecutor.execute(api, new SendMessageRequest(chatId, text));
+    }
+
+    /**
+     * Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to
+     * the user as a notification at the top of the chat screen or as an alert. On success, True is returned.
+     *
+     * @param callbackId   Unique identifier for the query to be answered
+     * @param text         Text of the notification. If not specified, nothing will be shown to the user
+     * @param showAlert    If true, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to false.
+     * @return true on success
+     * @see <a href="https://core.telegram.org/bots/api#answercallbackquery">the Telegram Bot API</a> for more information.
+     */
+    public final ApiResponse<Boolean> answerCallbackQuery(String callbackId, String text, boolean showAlert) {
+        return requestExecutor.execute(api, new AnswerCallbackQueryRequest(callbackId, text, showAlert));
+    }
+
+    /**
+     * @see TelegramBot#answerCallbackQuery(String, String, boolean)
+     */
+    public final ApiResponse<Boolean> answerCallbackQuery(CallbackQuery callback) {
+        return answerCallbackQuery(callback.getId(), null, false);
+    }
+
+    /**
+     * @see TelegramBot#answerCallbackQuery(String, String, boolean)
+     */
+    public final ApiResponse<Boolean> answerCallbackQuery(CallbackQuery callback, String text) {
+        return answerCallbackQuery(callback.getId(), text, false);
+    }
+
+    /**
+     * @see TelegramBot#answerCallbackQuery(String, String, boolean)
+     */
+    public final ApiResponse<Boolean> alertCallbackQuery(CallbackQuery callback, String text) {
+        return answerCallbackQuery(callback.getId(), text, true);
     }
 
     /**
@@ -491,24 +523,38 @@ abstract public class TelegramBot {
     }
 
     /**
-     * This method is called by this class to process all new {@link Message}s asynchronously.
+     * This method is called when a new callback query has arrived.
+     * It can safely be overridden by subclasses.
+     *
+     * @param callback The newly arrived {@link CallbackQuery}
+     */
+    protected void onCallback(CallbackQuery callback) {
+        // Can be overridden by subclasses.
+    }
+
+    /**
+     * This method is called by this class to process all new {@link Message}s or {@link CallbackQuery}s asynchronously.
      * It <b>must</b> be overridden if {@link TelegramBot#provideExecutorService()} is overridden to return null, otherwise
      * a {@link NullPointerException} may be thrown.
      *
-     * @param messages The newly arrived {@link Message}s
+     * @param updates The newly arrived {@link Message}s or {@link CallbackQuery}s
      */
-    protected void notifyNewMessages(List<Message> messages) {
-        for (final Message message : messages) {
+    protected void notifyNewUpdates(List<Updatable> updates) {
+        for (final Updatable obj : updates) {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    onMessage(message);
+                    if (obj instanceof Message) {
+                        onMessage((Message) obj);
+                    } else if (obj instanceof CallbackQuery) {
+                        onCallback((CallbackQuery) obj);
+                    }
                 }
             });
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    handlerNotifier.notifyHandlers(message);
+                    handlerNotifier.notifyHandlers(obj);
                 }
             });
         }
@@ -534,21 +580,22 @@ abstract public class TelegramBot {
 
             List<Update> updates = requestExecutor.execute(api, request).getResult();
             if (updates.size() > 0) {
-                List<Message> newMessages = processUpdates(updates);
-                notifyNewMessages(newMessages);
+                List<Updatable> newUpdates = processUpdates(updates);
+                notifyNewUpdates(newUpdates);
             }
         }
 
-        private List<Message> processUpdates(List<Update> updates) {
-            List<Message> newMessages = new ArrayList<Message>();
-
+        private List<Updatable> processUpdates(List<Update> updates) {
+            List<Updatable> objects = new ArrayList<>();
             for (Update update : updates) {
                 if (update.getUpdateId() > lastUpdateId)
                     lastUpdateId = update.getUpdateId();
-                newMessages.add(update.getMessage());
+                if (update.getMessage() != null)
+                    objects.add(update.getMessage());
+                if (update.getCallbackQuery() != null)
+                    objects.add(update.getCallbackQuery());
             }
-
-            return newMessages;
+            return objects;
         }
     }
 

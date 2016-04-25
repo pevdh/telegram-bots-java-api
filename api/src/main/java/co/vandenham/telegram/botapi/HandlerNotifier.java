@@ -1,6 +1,8 @@
 package co.vandenham.telegram.botapi;
 
+import co.vandenham.telegram.botapi.types.CallbackQuery;
 import co.vandenham.telegram.botapi.types.Message;
+import co.vandenham.telegram.botapi.types.Updatable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -17,11 +19,10 @@ public class HandlerNotifier {
 
     private Object objectWithHandlers;
     private Method defaultHandler;
-    private List<MessageFilter> messageHandlers = new ArrayList<>();
+    private List<UpdatableFilter> updateHandlers = new ArrayList<>();
 
     public HandlerNotifier(Object objectWithHandlers) {
         this.objectWithHandlers = objectWithHandlers;
-
         indexHandlers();
     }
 
@@ -31,11 +32,15 @@ public class HandlerNotifier {
             if (method.isAnnotationPresent(MessageHandler.class)) {
                 logger.info("Found MessageHandler: " + method.getName());
                 MessageHandler messageHandlerAnnotation = method.getAnnotation(MessageHandler.class);
-                messageHandlers.add(new MessageHandlerFilter(messageHandlerAnnotation.contentTypes(), method));
+                updateHandlers.add(new MessageHandlerFilter(messageHandlerAnnotation.contentTypes(), method));
+            } else if (method.isAnnotationPresent(CallbackHandler.class)) {
+                logger.info("Found CallbackHandler: " + method.getName());
+                CallbackHandler callbackHandlerAnnotation = method.getAnnotation(CallbackHandler.class);
+                updateHandlers.add(new CallbackHandlerFilter(callbackHandlerAnnotation.contentTypes(), method));
             } else if (method.isAnnotationPresent(CommandHandler.class)) {
                 logger.info("Found CommandHandler: " + method.getName());
                 CommandHandler commandHandlerAnnotation = method.getAnnotation(CommandHandler.class);
-                messageHandlers.add(new CommandHandlerFilter(commandHandlerAnnotation.value(), method));
+                updateHandlers.add(new CommandHandlerFilter(commandHandlerAnnotation.value(), method));
             } else if (method.isAnnotationPresent(DefaultHandler.class)) {
                 logger.info("Found DefaultHandler: " + method.getName());
                 defaultHandler = method;
@@ -43,10 +48,10 @@ public class HandlerNotifier {
         }
     }
 
-    public void notifyHandlers(final Message message) {
+    public void notifyHandlers(final Updatable update) {
         Method handler = null;
-        for (MessageFilter filter : messageHandlers) {
-            if (filter.valid(message)) {
+        for (UpdatableFilter filter : updateHandlers) {
+            if (filter.valid(update)) {
                 handler = filter.getHandler();
                 break;
             }
@@ -56,10 +61,10 @@ public class HandlerNotifier {
             handler = defaultHandler;
 
         final Method handlerToExecute = handler;
-        notifyMessageHandler(handlerToExecute, message);
+        notifyMessageHandler(handlerToExecute, update);
     }
 
-    private void notifyMessageHandler(Method handler, Message message) {
+    private void notifyMessageHandler(Method handler, Updatable message) {
         try {
             handler.invoke(objectWithHandlers, message);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -67,12 +72,12 @@ public class HandlerNotifier {
         }
     }
 
-    private interface MessageFilter {
-        boolean valid(Message message);
+    private interface UpdatableFilter {
+        boolean valid(Updatable obj);
         Method getHandler();
     }
 
-    private static class MessageHandlerFilter implements MessageFilter {
+    private static class MessageHandlerFilter implements UpdatableFilter {
 
         private Method handler;
         private List<Message.Type> contentTypes;
@@ -83,8 +88,12 @@ public class HandlerNotifier {
         }
 
         @Override
-        public boolean valid(Message message) {
-            return contentTypes.contains(message.getType());
+        public boolean valid(Updatable obj) {
+            if (obj instanceof Message) {
+                return contentTypes.contains(((Message)obj).getType());
+            } else {
+                return false;
+            }
         }
 
         @Override
@@ -93,7 +102,32 @@ public class HandlerNotifier {
         }
     }
 
-    private static class CommandHandlerFilter implements MessageFilter {
+    private static class CallbackHandlerFilter implements UpdatableFilter {
+
+        private Method handler;
+        private List<CallbackQuery.Type> contentTypes;
+
+        public CallbackHandlerFilter(CallbackQuery.Type[] contentTypes, Method handler) {
+            this.contentTypes = Arrays.asList(contentTypes);
+            this.handler = handler;
+        }
+
+        @Override
+        public boolean valid(Updatable obj) {
+            if (obj instanceof CallbackQuery) {
+                return contentTypes.contains(((CallbackQuery)obj).getType());
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public Method getHandler() {
+            return handler;
+        }
+    }
+
+    private static class CommandHandlerFilter implements UpdatableFilter {
 
         private Method handler;
         private List<String> commands;
@@ -104,8 +138,13 @@ public class HandlerNotifier {
         }
 
         @Override
-        public boolean valid(Message message) {
-            return message.getType() == Message.Type.TEXT && commands.contains(extractCommand(message));
+        public boolean valid(Updatable obj) {
+            if (obj instanceof Message) {
+                Message message = (Message)obj;
+                return message.getType() == Message.Type.TEXT && commands.contains(extractCommand(message));
+            } else {
+                return false;
+            }
         }
 
         private String extractCommand(Message message) {
