@@ -57,4 +57,13 @@ public class SendVoiceRequest implements ApiRequest<Message> {
     public RequestStrategy getRequestStrategy() {
         return requestStrategy;
     }
+
+    @Override
+    public String toString() {
+        return "SendVoiceRequest{" +
+                "args=" + args +
+                ", requestStrategy=" + requestStrategy +
+                '}';
+    }
+
 }

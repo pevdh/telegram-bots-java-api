@@ -67,7 +67,6 @@ public final class TelegramApi {
             HttpsURLConnection connection = buildConnection(method);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
-
             return readAll(connection);
         } catch (IOException exception) {
             throw new ApiException(method, exception);

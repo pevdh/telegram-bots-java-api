@@ -60,6 +60,7 @@ abstract public class TelegramBot {
      *
      */
     public boolean isRunning() {
+        logger.trace("Running state: polling thread {} alive {}, running flag {}", pollThread, pollThread != null && pollThread.isAlive(), running.get());
         return (pollThread != null) && (running.get() == true) && pollThread.isAlive();
     }
 
@@ -74,9 +75,9 @@ abstract public class TelegramBot {
      */
     public final void start() {
         if (running.get()) {
-            logger.debug("Already started");
+            logger.debug("Trying to start bot, but it's already started");
         } else {
-            logger.info("Starting");
+            logger.info("Starting telegram bot...");
 
             executorService = provideExecutorService();
             requestExecutor = sendAsync ?
@@ -87,6 +88,7 @@ abstract public class TelegramBot {
             pollThread = new Thread(new UpdatePoller());
             pollThread.start();
             onStart();
+            logger.info("Telegram bot started...");
         }
     }
 
@@ -98,7 +100,7 @@ abstract public class TelegramBot {
      * Stops the bot and joins the polling {@link Thread}.
      */
     public final void stop() {
-        logger.info("Stopping");
+        logger.info("Stopping telegram bot...");
         running.set(false);
 
         try {
@@ -107,6 +109,7 @@ abstract public class TelegramBot {
             e.printStackTrace();
         }
         onStop();
+        logger.info("Telegram bot stopped.");
     }
 
     protected void onStop() {
