@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents an incoming update.
@@ -11,13 +11,13 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Update {
 
-    @SerializedName("update_id")
+    @JsonProperty("update_id")
     private int updateId;
 
-    @SerializedName("message")
+    @JsonProperty("message")
     private Message message;
 
-    @SerializedName("callback_query")
+    @JsonProperty("callback_query")
     private CallbackQuery callbackQuery;
 
     /**

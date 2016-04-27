@@ -1,19 +1,19 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Voice {
 
-    @SerializedName("file_id")
+    @JsonProperty("file_id")
     private String fileId;
 
-    @SerializedName("duration")
+    @JsonProperty("duration")
     private int duration;
 
-    @SerializedName("mime_type")
+    @JsonProperty("mime_type")
     private String mimeType;
 
-    @SerializedName("file_size")
+    @JsonProperty("file_size")
     private int fileSize;
 
     /**

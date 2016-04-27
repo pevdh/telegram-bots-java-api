@@ -1,7 +1,7 @@
 package co.vandenham.telegram.botapi.types;
 
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a Telegram user or bot.
@@ -12,16 +12,16 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {
 
-    @SerializedName("id")
+    @JsonProperty("id")
     private int id;
 
-    @SerializedName("first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
-    @SerializedName("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
-    @SerializedName("username")
+    @JsonProperty("username")
     private String username;
 
     /**

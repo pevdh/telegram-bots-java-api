@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a point on the map.
@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Location {
 
-    @SerializedName("longitude")
+    @JsonProperty("longitude")
     private float longitude;
 
-    @SerializedName("latitude")
+    @JsonProperty("latitude")
     private float latitude;
 
     /**

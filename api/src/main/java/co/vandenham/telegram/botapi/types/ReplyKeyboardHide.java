@@ -1,7 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Upon receiving a message with this object, Telegram clients will hide the current custom keyboard and display the default letter-keyboard.
@@ -10,14 +9,14 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#replykeyboardhide">https://core.telegram.org/bots/api#replykeyboardhide</a>
  */
-public class ReplyKeyboardHide implements ReplyMarkup {
+public class ReplyKeyboardHide extends ReplyMarkup {
 
     private final static ReplyKeyboardHide NON_SELECTIVE = new ReplyKeyboardHide(false);
     private final static ReplyKeyboardHide SELECTIVE = new ReplyKeyboardHide(true);
 
-    @SerializedName("hide_keyboard")
+    @JsonProperty("hide_keyboard")
     private boolean hideKeyboard = true;
-    @SerializedName("selective")
+    @JsonProperty("selective")
     private boolean selective = false;
 
     private ReplyKeyboardHide(boolean selective) {
@@ -42,13 +41,4 @@ public class ReplyKeyboardHide implements ReplyMarkup {
         return NON_SELECTIVE;
     }
 
-    /**
-     * Serializes this object to a JSON String.
-     *
-     * @return A JSON String representation of this object.
-     */
-    @Override
-    public String serialize() {
-        return new Gson().toJson(this);
-    }
 }

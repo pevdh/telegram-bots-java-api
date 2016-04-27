@@ -1,19 +1,19 @@
 package co.vandenham.telegram.botapi.requests;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApiResult<T> {
 
-    @SerializedName("ok")
+    @JsonProperty("ok")
     private boolean ok;
 
-    @SerializedName("description")
+    @JsonProperty("description")
     private String description;
 
-    @SerializedName("error_code")
+    @JsonProperty("error_code")
     private int errorCode;
 
-    @SerializedName("result")
+    @JsonProperty("result")
     private T result;
 
     public ApiResult() {

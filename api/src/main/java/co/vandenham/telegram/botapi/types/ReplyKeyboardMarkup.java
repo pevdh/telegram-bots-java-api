@@ -1,7 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,18 +11,18 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#replykeyboardmarkup">https://core.telegram.org/bots/api#replykeyboardmarkup</a>
  */
-public class ReplyKeyboardMarkup implements ReplyMarkup {
+public class ReplyKeyboardMarkup extends ReplyMarkup {
 
-    @SerializedName("keyboard")
+    @JsonProperty("keyboard")
     private List<List<String>> keyboard;
 
-    @SerializedName("resize_keyboard")
+    @JsonProperty("resize_keyboard")
     private boolean resizeKeyboard;
 
-    @SerializedName("one_time_keyboard")
+    @JsonProperty("one_time_keyboard")
     private boolean oneTimeKeyboard;
 
-    @SerializedName("selective")
+    @JsonProperty("selective")
     private boolean selective;
 
     private ReplyKeyboardMarkup(Builder builder) {
@@ -31,16 +30,6 @@ public class ReplyKeyboardMarkup implements ReplyMarkup {
         resizeKeyboard = builder.resizeKeyboard;
         oneTimeKeyboard = builder.oneTimeKeyboard;
         selective = builder.selective;
-    }
-
-    /**
-     * Serializes this object to a JSON String.
-     *
-     * @return A JSON String representation of this object.
-     */
-    @Override
-    public String serialize() {
-        return new Gson().toJson(this);
     }
 
     /**

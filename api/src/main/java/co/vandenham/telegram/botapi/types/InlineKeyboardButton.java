@@ -1,7 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,29 +12,19 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#inlinekeyboardbutton">the Telegram Bot API</a>
  */
-public abstract class InlineKeyboardButton implements ReplyMarkup {
+public abstract class InlineKeyboardButton extends ReplyMarkup {
 
-    @SerializedName("text")
+    @JsonProperty("text")
     private String text;
-    @SerializedName("url")
+    @JsonProperty("url")
     protected String url;
-    @SerializedName("callback_data")
+    @JsonProperty("callback_data")
     protected String data;
-    @SerializedName("switch_inline_query")
+    @JsonProperty("switch_inline_query")
     protected String query;
 
     protected InlineKeyboardButton(String text) {
         this.text = text;
-    }
-
-    /**
-     * Serializes this object to a JSON String.
-     *
-     * @return A JSON String representation of this object.
-     */
-    @Override
-    public String serialize() {
-        return new Gson().toJson(this);
     }
 
     @Override

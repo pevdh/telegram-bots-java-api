@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a chat.
@@ -8,19 +8,19 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Chat {
 
-    @SerializedName("id")
+    @JsonProperty("id")
     private int id;
 
-    @SerializedName("first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
-    @SerializedName("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
-    @SerializedName("username")
+    @JsonProperty("username")
     private String username;
 
-    @SerializedName("title")
+    @JsonProperty("title")
     private String title;
 
     /**

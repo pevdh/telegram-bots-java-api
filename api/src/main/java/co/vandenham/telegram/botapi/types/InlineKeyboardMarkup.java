@@ -1,7 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,23 +11,13 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#replykeyboardmarkup">https://core.telegram.org/bots/api#replykeyboardmarkup</a>
  */
-public class InlineKeyboardMarkup implements ReplyMarkup {
+public class InlineKeyboardMarkup extends ReplyMarkup {
 
-    @SerializedName("inline_keyboard")
+    @JsonProperty("inline_keyboard")
     private List<List<InlineKeyboardButton>> inline_keyboard;
 
     private InlineKeyboardMarkup(Builder builder) {
         inline_keyboard = builder.inline_keyboard;
-    }
-
-    /**
-     * Serializes this object to a JSON String.
-     *
-     * @return A JSON String representation of this object.
-     */
-    @Override
-    public String serialize() {
-        return new Gson().toJson(this);
     }
 
     /**

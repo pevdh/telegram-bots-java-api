@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a group chat.
@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
  */
 public class GroupChat {
 
-    @SerializedName("id")
+    @JsonProperty("id")
     private int id;
 
-    @SerializedName("title")
+    @JsonProperty("title")
     private String title;
 
     /**

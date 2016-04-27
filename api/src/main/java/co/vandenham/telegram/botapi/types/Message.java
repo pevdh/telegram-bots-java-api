@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -13,70 +13,70 @@ import java.util.List;
  */
 public class Message implements Updatable {
 
-    @SerializedName("message_id")
+    @JsonProperty("message_id")
     private int messageId;
 
-    @SerializedName("from")
+    @JsonProperty("from")
     private User from;
 
-    @SerializedName("date")
+    @JsonProperty("date")
     private int date;
 
-    @SerializedName("chat")
+    @JsonProperty("chat")
     private Chat chat;
 
-    @SerializedName("forward_from")
+    @JsonProperty("forward_from")
     private User forwardFrom;
 
-    @SerializedName("forward_date")
+    @JsonProperty("forward_date")
     private int forwardDate;
 
-    @SerializedName("reply_to_message")
+    @JsonProperty("reply_to_message")
     private Message replyToMessage;
 
-    @SerializedName("text")
+    @JsonProperty("text")
     private String text;
 
-    @SerializedName("audio")
+    @JsonProperty("audio")
     private Audio audio;
 
-    @SerializedName("document")
+    @JsonProperty("document")
     private Document document;
 
-    @SerializedName("photo")
+    @JsonProperty("photo")
     private List<PhotoSize> photo;
 
-    @SerializedName("sticker")
+    @JsonProperty("sticker")
     private Sticker sticker;
 
-    @SerializedName("video")
+    @JsonProperty("video")
     private Video video;
 
-    @SerializedName("contact")
+    @JsonProperty("contact")
     private Contact contact;
 
-    @SerializedName("location")
+    @JsonProperty("location")
     private Location location;
 
-    @SerializedName("new_chat_participant")
+    @JsonProperty("new_chat_participant")
     private User newChatParticipant;
 
-    @SerializedName("left_chat_participant")
+    @JsonProperty("left_chat_participant")
     private User leftChatParticipant;
 
-    @SerializedName("new_chat_title")
+    @JsonProperty("new_chat_title")
     private String newChatTitle;
 
-    @SerializedName("new_chat_photo")
+    @JsonProperty("new_chat_photo")
     private List<PhotoSize> newChatPhoto;
 
-    @SerializedName("delete_chat_photo")
+    @JsonProperty("delete_chat_photo")
     private boolean deleteChatPhoto;
 
-    @SerializedName("group_chat_created")
+    @JsonProperty("group_chat_created")
     private boolean groupChatCreated;
 
-    @SerializedName("caption")
+    @JsonProperty("caption")
     private String caption;
 
     private Type type;

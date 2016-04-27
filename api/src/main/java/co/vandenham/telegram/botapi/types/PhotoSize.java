@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents one size of a photo or a file / sticker thumbnail.
@@ -11,16 +11,16 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PhotoSize {
 
-    @SerializedName("file_id")
+    @JsonProperty("file_id")
     private String fileId;
 
-    @SerializedName("width")
+    @JsonProperty("width")
     private int width;
 
-    @SerializedName("height")
+    @JsonProperty("height")
     private int height;
 
-    @SerializedName("file_size")
+    @JsonProperty("file_size")
     private int fileSize = -1;
 
     /**
