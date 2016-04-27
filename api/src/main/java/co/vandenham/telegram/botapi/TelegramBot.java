@@ -74,11 +74,13 @@ abstract public class TelegramBot {
      * After this, a polling {@link java.lang.Thread} is instantiated and the bot starts polling the Telegram API.
      */
     public final void start() {
+        logger.info("Starting telegram bot...");
         if (running.get()) {
-            logger.debug("Trying to start bot, but it's already started");
+            logger.debug("Trying to start bot, but it seems it's already started");
+            logger.trace("If you expected the bot to be down, maybe the thread has crashed");
+            logger.trace("Issue a stop() followed by a start() to reset the internal state");
+            logger.trace("Running state: polling thread {} alive {}, running flag {}", pollThread, pollThread != null && pollThread.isAlive(), running.get());
         } else {
-            logger.info("Starting telegram bot...");
-
             executorService = provideExecutorService();
             requestExecutor = sendAsync ?
                     ApiRequestExecutor.getAsynchronousExecutor() : ApiRequestExecutor.getSynchronousExecutor();
@@ -88,8 +90,8 @@ abstract public class TelegramBot {
             pollThread = new Thread(new UpdatePoller());
             pollThread.start();
             onStart();
-            logger.info("Telegram bot started...");
         }
+        logger.info("Telegram bot started...");
     }
 
     protected void onStart() {
@@ -104,11 +106,15 @@ abstract public class TelegramBot {
         running.set(false);
 
         try {
-            if (pollThread != null && pollThread.isAlive()) pollThread.join();
+            if (pollThread != null && pollThread.isAlive()) {
+                pollThread.join();
+                onStop();
+            } else {
+                logger.debug("Trying to stop bot, but it's not running");
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onStop();
         logger.info("Telegram bot stopped.");
     }
 
