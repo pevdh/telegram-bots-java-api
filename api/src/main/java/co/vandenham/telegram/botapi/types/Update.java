@@ -17,6 +17,9 @@ public class Update {
     @SerializedName("message")
     private Message message;
 
+    @SerializedName("callback_query")
+    private CallbackQuery callbackQuery;
+
     /**
      * @return The update‘s unique identifier.
      * Update identifiers start from a certain positive number and increase sequentially.
@@ -34,4 +37,14 @@ public class Update {
     public Message getMessage() {
         return message;
     }
+
+    /**
+     * <i>Optional.</i>
+     *
+     * @return New incoming callback query of any kind — message or inline
+     */
+    public CallbackQuery getCallbackQuery() {
+        return callbackQuery;
+    }
+
 }

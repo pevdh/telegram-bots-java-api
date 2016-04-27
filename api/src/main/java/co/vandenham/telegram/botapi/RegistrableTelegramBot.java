@@ -1,6 +1,8 @@
 package co.vandenham.telegram.botapi;
 
+import co.vandenham.telegram.botapi.types.CallbackQuery;
 import co.vandenham.telegram.botapi.types.Message;
+import co.vandenham.telegram.botapi.types.Updatable;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,7 +12,7 @@ import java.util.concurrent.Executors;
 public class RegistrableTelegramBot extends TelegramBot {
 
     private boolean async;
-    private List<MessageListener> messageListeners = new CopyOnWriteArrayList<>();
+    private List<UpdateListener> updateListeners = new CopyOnWriteArrayList<>();
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
     public RegistrableTelegramBot(String botToken) {
@@ -21,12 +23,12 @@ public class RegistrableTelegramBot extends TelegramBot {
         super(botToken, async);
     }
 
-    public void register(MessageListener messageListener) {
-        messageListeners.add(messageListener);
+    public void register(UpdateListener messageListener) {
+        updateListeners.add(messageListener);
     }
 
-    public void unregister(MessageListener messageListener) {
-        messageListeners.remove(messageListener);
+    public void unregister(UpdateListener messageListener) {
+        updateListeners.remove(messageListener);
     }
 
     @Override
@@ -34,24 +36,29 @@ public class RegistrableTelegramBot extends TelegramBot {
         return null;
     }
 
-
     @Override
-    protected void notifyNewMessages(List<Message> messages) {
-        for (final Message message : messages) {
-            for (final MessageListener messageListener : messageListeners) {
+    protected void notifyNewUpdates(List<Updatable> updates) {
+        for (final Updatable obj : updates) {
+            for (final UpdateListener updateListener : updateListeners) {
                 executorService.submit(new Runnable() {
                     @Override
                     public void run() {
-                        messageListener.onMessage(RegistrableTelegramBot.this, message);
+                        if (obj instanceof Message) {
+                            updateListener.onMessage(RegistrableTelegramBot.this, (Message)obj);
+                        } else if (obj instanceof CallbackQuery) {
+                            updateListener.onCallback(RegistrableTelegramBot.this, (CallbackQuery)obj);
+                        }
                     }
                 });
             }
         }
     }
 
-    public interface MessageListener {
+    public interface UpdateListener {
 
         void onMessage(TelegramBot bot, Message message);
+        void onCallback(TelegramBot bot, CallbackQuery callback);
 
     }
+
 }

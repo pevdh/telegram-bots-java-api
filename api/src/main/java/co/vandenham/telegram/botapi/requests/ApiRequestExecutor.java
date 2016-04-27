@@ -1,13 +1,14 @@
 package co.vandenham.telegram.botapi.requests;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
 abstract public class ApiRequestExecutor {
 
-    private static final Logger log = Logger.getLogger(ApiRequestExecutor.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ApiRequestExecutor.class);
     private static final Gson gson = new Gson();
 
     private static final ApiRequestExecutor synchronousExecutor = new SyncApiRequestExecutor();
@@ -30,14 +31,16 @@ abstract public class ApiRequestExecutor {
     }
 
     protected <T> T makeRequest(TelegramApi api, ApiRequest<T> request) {
-        log.info(request.toString());
+        log.trace(request.toString());
 
         String response = request.getRequestStrategy().makeRequest(request, api);
 
         ApiResult<T> result = deserialize(response, request.getResultType());
 
-        if (!result.isOk())
+        if (!result.isOk()) {
+            log.error("Request {} failed with code {} ({})", request.getMethodName(), result.getErrorCode(), result.getDescription());
             throw new ApiException(request.getMethodName(), result);
+        }
 
         return result.getResult();
     }
@@ -79,7 +82,7 @@ abstract public class ApiRequestExecutor {
             try {
                 return result.get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                log.error("Exception waiting for asynchronous result", e);
             }
             return null;
         }
