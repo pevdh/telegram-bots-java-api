@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#groupchat">https://core.telegram.org/bots/api#groupchat</a>
  */
-public class GroupChat {
+public class GroupChat extends TelegramType {
 
     @JsonProperty("id")
     private int id;

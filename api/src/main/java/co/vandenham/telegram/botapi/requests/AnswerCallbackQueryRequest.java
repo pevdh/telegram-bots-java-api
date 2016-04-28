@@ -1,7 +1,5 @@
 package co.vandenham.telegram.botapi.requests;
 
-import co.vandenham.telegram.botapi.types.Message;
-
 import java.util.HashMap;
 import java.util.Map;
 

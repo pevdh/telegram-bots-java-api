@@ -1,8 +1,9 @@
 package co.vandenham.telegram.botapi.requests;
 
+import co.vandenham.telegram.botapi.types.TelegramType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ApiResult<T> {
+public class ApiResult<T> extends TelegramType {
 
     @JsonProperty("ok")
     private boolean ok;

@@ -6,10 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents a chat.
  * This might be a chat with a {@link User} or a {@link GroupChat}
  */
-public class Chat {
+public class Chat extends TelegramType {
 
     @JsonProperty("id")
     private int id;
+
+    @JsonProperty("type")
+    private String type;
 
     @JsonProperty("first_name")
     private String firstName;
@@ -45,6 +48,13 @@ public class Chat {
     }
 
     /**
+     * @return Type of chat, can be either “private”, “group”, “supergroup” or “channel”
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
      * Returns this chat as a {@link User}.
      * Before invoking, check whether this chat is actually a chat with a user
      * by calling {@link Chat#isUser()}.
@@ -68,9 +78,14 @@ public class Chat {
 
     @Override
     public String toString() {
-        if (isUser())
-            return "Chat {" + asUser().toString() + "}";
-        else
-            return "Chat {" + asGroupChat().toString() + "}";
+        final StringBuilder sb = new StringBuilder("Chat{");
+        sb.append("id=").append(id);
+        sb.append(", type=").append(type);
+        sb.append(", title=").append(title);
+        sb.append(", username=").append(username);
+        sb.append(", first_name=").append(firstName);
+        sb.append(", last_name=").append(lastName);
+        sb.append('}');
+        return sb.toString();
     }
 }

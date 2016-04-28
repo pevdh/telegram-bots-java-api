@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#message">https://core.telegram.org/bots/api#message</a>
  */
-public class Message implements Updatable {
+public class Message extends TelegramType implements Updatable {
 
     @JsonProperty("message_id")
     private int messageId;

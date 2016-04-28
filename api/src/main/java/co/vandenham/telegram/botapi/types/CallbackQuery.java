@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#callbackquery">the Telegram Bot API</a> for more information
  */
-public class CallbackQuery implements Updatable {
+public class CallbackQuery extends TelegramType implements Updatable {
     @JsonProperty("id")
     private String id;
 

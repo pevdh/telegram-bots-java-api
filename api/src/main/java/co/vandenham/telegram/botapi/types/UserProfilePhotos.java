@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#userprofilephotos">https://core.telegram.org/bots/api#userprofilephotos</a>
  */
-public class UserProfilePhotos {
+public class UserProfilePhotos extends TelegramType {
 
     @JsonProperty("total_count")
     private int totalCount;

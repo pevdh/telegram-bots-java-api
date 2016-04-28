@@ -578,7 +578,6 @@ abstract public class TelegramBot {
                     poll();
                 } catch (ApiException e) {
                     logger.error(MarkerFactory.getMarker("SEVERE"), "An exception occurred while polling Telegram.", e);
-                    running.set(false);
                 }
             }
         }
@@ -588,7 +587,7 @@ abstract public class TelegramBot {
             GetUpdatesRequest request = new GetUpdatesRequest(optionalArgs);
 
             List<Update> updates = requestExecutor.execute(api, request).getResult();
-            if (updates.size() > 0) {
+            if (updates != null && updates.size() > 0) {
                 List<Updatable> newUpdates = processUpdates(updates);
                 notifyNewUpdates(newUpdates);
             }

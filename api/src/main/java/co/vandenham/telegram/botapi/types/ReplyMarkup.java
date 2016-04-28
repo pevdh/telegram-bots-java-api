@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * Defines a general interface for reply markups.
  */
-public abstract class ReplyMarkup {
+public abstract class ReplyMarkup extends TelegramType {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     static {

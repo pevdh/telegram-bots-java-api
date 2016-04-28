@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#contact">https://core.telegram.org/bots/api#contact</a>
  */
-public class Contact {
+public class Contact extends TelegramType {
 
     @JsonProperty("phone_number")
     private String phoneNumber;

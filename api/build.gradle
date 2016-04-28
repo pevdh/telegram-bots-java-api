@@ -1,7 +1,7 @@
 
 archivesBaseName = project.projectName
 sourceCompatibility = 1.8
-version = '2.0.1'
+version = '2.1.0'
 
 test {
     if (System.getenv("TOKEN") == null || System.getenv("CHAT_ID") == null)

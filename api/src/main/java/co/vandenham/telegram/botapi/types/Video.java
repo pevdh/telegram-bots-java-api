@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#video">https://core.telegram.org/bots/api#video</a>
  */
-public class Video {
+public class Video extends TelegramType {
 
     @JsonProperty("file_id")
     private String fileId;

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#update">https://core.telegram.org/bots/api#update</a>
  */
-public class Update {
+public class Update extends TelegramType {
 
     @JsonProperty("update_id")
     private int updateId;

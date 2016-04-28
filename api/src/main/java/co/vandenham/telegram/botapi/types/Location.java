@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#location">https://core.telegram.org/bots/api#location</a>
  */
-public class Location {
+public class Location extends TelegramType {
 
     @JsonProperty("longitude")
     private float longitude;

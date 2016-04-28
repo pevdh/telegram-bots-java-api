@@ -2,7 +2,7 @@ package co.vandenham.telegram.botapi.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Voice {
+public class Voice extends TelegramType {
 
     @JsonProperty("file_id")
     private String fileId;

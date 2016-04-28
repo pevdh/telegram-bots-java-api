@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see <a href="https://core.telegram.org/bots/api#audio">https://core.telegram.org/bots/api#audio</a>
  */
-public class Audio {
+public class Audio extends TelegramType {
 
     @JsonProperty("file_id")
     private String fileId;
