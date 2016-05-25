@@ -4,7 +4,8 @@ import co.vandenham.telegram.botapi.types.Message;
 import co.vandenham.telegram.botapi.types.Update;
 import co.vandenham.telegram.botapi.types.User;
 import co.vandenham.telegram.botapi.types.UserProfilePhotos;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -22,19 +23,19 @@ interface ApiRequest<T> {
     RequestStrategy getRequestStrategy();
 
     enum ResultTypes {
-        USER(new TypeToken<ApiResult<User>>() {}.getType()),
-        MESSAGE(new TypeToken<ApiResult<Message>>() {}.getType()),
-        BOOLEAN(new TypeToken<ApiResult<Boolean>>() {}.getType()),
-        USER_PROFILE_PHOTOS(new TypeToken<ApiResult<UserProfilePhotos>>() {}.getType()),
-        LIST_OF_UPDATES(new TypeToken<ApiResult<List<Update>>>() {}.getType());
+        USER(new TypeReference<ApiResult<User>>() {}),
+        MESSAGE(new TypeReference<ApiResult<Message>>() {}),
+        BOOLEAN(new TypeReference<ApiResult<Boolean>>() {}),
+        USER_PROFILE_PHOTOS(new TypeReference<ApiResult<UserProfilePhotos>>() {}),
+        LIST_OF_UPDATES(new TypeReference<ApiResult<List<Update>>>() {});
 
-        private Type type;
+        private TypeReference<?> type;
 
-        ResultTypes(Type type) {
+        ResultTypes(TypeReference<?> type) {
             this.type = type;
         }
 
-        public Type getType() {
+        public TypeReference<?> getType() {
             return type;
         }
     }

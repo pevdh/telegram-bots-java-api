@@ -1,8 +1,10 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -11,11 +13,11 @@ import static org.junit.Assert.*;
  */
 public class TypesTest {
 
-    private Gson gson;
+    private ObjectMapper mapper;
 
     @Before
     public void setUp() throws Exception {
-        gson = new Gson();
+        mapper = new ObjectMapper();
     }
 
     @Test
@@ -122,7 +124,11 @@ public class TypesTest {
 
 
     private <T> T createSubject(String json, Class<T> clsOf) {
-        return gson.fromJson(json, clsOf);
+        try {
+            return mapper.readValue(json, clsOf);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

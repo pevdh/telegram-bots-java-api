@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents an incoming callback query from a callback button in an inline keyboard.
@@ -11,20 +11,20 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#callbackquery">the Telegram Bot API</a> for more information
  */
-public class CallbackQuery implements Updatable {
-    @SerializedName("id")
+public class CallbackQuery extends TelegramType implements Updatable {
+    @JsonProperty("id")
     private String id;
 
-    @SerializedName("from")
+    @JsonProperty("from")
     private User from;
 
-    @SerializedName("message")
+    @JsonProperty("message")
     private Message message;
 
-    @SerializedName("inline_message_id")
+    @JsonProperty("inline_message_id")
     private String inlineMessageId;
 
-    @SerializedName("data")
+    @JsonProperty("data")
     private String data;
 
     private Type type;

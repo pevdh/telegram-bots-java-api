@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a phone contact.
@@ -9,18 +9,18 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#contact">https://core.telegram.org/bots/api#contact</a>
  */
-public class Contact {
+public class Contact extends TelegramType {
 
-    @SerializedName("phone_number")
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @SerializedName("first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
-    @SerializedName("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
-    @SerializedName("user_id")
+    @JsonProperty("user_id")
     private int userId;
 
     /**

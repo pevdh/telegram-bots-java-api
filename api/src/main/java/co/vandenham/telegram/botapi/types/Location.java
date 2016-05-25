@@ -1,18 +1,18 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a point on the map.
  *
  * @see <a href="https://core.telegram.org/bots/api#location">https://core.telegram.org/bots/api#location</a>
  */
-public class Location {
+public class Location extends TelegramType {
 
-    @SerializedName("longitude")
+    @JsonProperty("longitude")
     private float longitude;
 
-    @SerializedName("latitude")
+    @JsonProperty("latitude")
     private float latitude;
 
     /**

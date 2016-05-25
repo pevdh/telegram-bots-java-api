@@ -20,6 +20,7 @@ public class EchoBot extends TelegramBot {
     }
 
     public static void main(String[] args) {
+        ch.qos.logback.classic.Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         ch.qos.logback.classic.Logger loggerObj = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(TelegramApi.class);
         loggerObj.setLevel(Level.TRACE);
 

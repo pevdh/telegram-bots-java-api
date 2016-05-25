@@ -1,18 +1,18 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a group chat.
  *
  * @see <a href="https://core.telegram.org/bots/api#groupchat">https://core.telegram.org/bots/api#groupchat</a>
  */
-public class GroupChat {
+public class GroupChat extends TelegramType {
 
-    @SerializedName("id")
+    @JsonProperty("id")
     private int id;
 
-    @SerializedName("title")
+    @JsonProperty("title")
     private String title;
 
     /**

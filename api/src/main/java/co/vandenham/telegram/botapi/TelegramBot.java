@@ -163,7 +163,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#getUserProfilePhotos(int, OptionalArgs)
      */
     public final ApiResponse<UserProfilePhotos> getUserProfilePhotos(int userId) {
-        return requestExecutor.execute(api, new GetUserProfilePhotosRequest(userId));
+        return getUserProfilePhotos(userId, null);
     }
 
     /**
@@ -185,7 +185,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendAudio(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendAudio(int chatId, File audioFile) {
-        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFile));
+        return sendAudio(chatId, audioFile, null);
     }
 
     /**
@@ -212,7 +212,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendAudio(int, String, OptionalArgs)
      */
     public final ApiResponse<Message> sendAudio(int chatId, String audioFileId) {
-        return requestExecutor.execute(api, new SendAudioRequest(chatId, audioFileId));
+        return sendAudio(chatId, audioFileId, null);
     }
 
     /**
@@ -241,7 +241,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendAudio(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendDocument(int chatId, File documentFile) {
-        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFile));
+        return sendDocument(chatId, documentFile);
     }
 
     /**
@@ -264,7 +264,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendDocument(int, String, OptionalArgs)
      */
     public final ApiResponse<Message> sendDocument(int chatId, String documentFileId) {
-        return requestExecutor.execute(api, new SendDocumentRequest(chatId, documentFileId));
+        return sendDocument(chatId, documentFileId, null);
     }
 
     /**
@@ -280,7 +280,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendLocation(int, float, float, OptionalArgs)
      */
     public final ApiResponse<Message> sendLocation(int chatId, float latitude, float longitude) {
-        return requestExecutor.execute(api, new SendLocationRequest(chatId, latitude, longitude));
+        return sendLocation(chatId, latitude, longitude, null);
     }
 
     /**
@@ -303,7 +303,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendMessage(int, String, OptionalArgs)
      */
     public final ApiResponse<Message> sendMessage(int chatId, String text) {
-        return requestExecutor.execute(api, new SendMessageRequest(chatId, text));
+        return sendMessage(chatId, text, null);
     }
 
     /**
@@ -360,7 +360,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendPhoto(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendPhoto(int chatId, File photoFile) {
-        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFile));
+        return sendPhoto(chatId, photoFile, null);
     }
 
     /**
@@ -380,7 +380,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendPhoto(int, String, OptionalArgs)
      */
     public final ApiResponse<Message> sendPhoto(int chatId, String photoFileId) {
-        return requestExecutor.execute(api, new SendPhotoRequest(chatId, photoFileId));
+        return sendPhoto(chatId, photoFileId, null);
     }
 
     /**
@@ -396,7 +396,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendSticker(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendSticker(int chatId, File stickerFile) {
-        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFile));
+        return sendSticker(chatId, stickerFile, null);
     }
 
     /**
@@ -418,7 +418,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendSticker(int, String, OptionalArgs)
      */
     public final ApiResponse<Message> sendSticker(int chatId, String stickerFileId) {
-        return requestExecutor.execute(api, new SendStickerRequest(chatId, stickerFileId));
+        return sendSticker(chatId, stickerFileId, null);
     }
 
     /**
@@ -434,7 +434,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendVideo(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendVideo(int chatId, File videoFile) {
-        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFile));
+        return sendVideo(chatId, videoFile, null);
     }
 
     /**
@@ -458,7 +458,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendVideo(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendVideo(int chatId, String videoFileId) {
-        return requestExecutor.execute(api, new SendVideoRequest(chatId, videoFileId));
+        return sendVideo(chatId, videoFileId, null);
     }
 
     /**
@@ -474,7 +474,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendVoice(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendVoice(int chatId, File voiceFile) {
-        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFile));
+        return sendVoice(chatId, voiceFile, null);
     }
 
     /**
@@ -501,7 +501,7 @@ abstract public class TelegramBot {
      * @see TelegramBot#sendVoice(int, File, OptionalArgs)
      */
     public final ApiResponse<Message> sendVoice(int chatId, String voiceFileId) {
-        return requestExecutor.execute(api, new SendVoiceRequest(chatId, voiceFileId));
+        return sendVoice(chatId, voiceFileId, null);
     }
 
     /**
@@ -578,7 +578,6 @@ abstract public class TelegramBot {
                     poll();
                 } catch (ApiException e) {
                     logger.error(MarkerFactory.getMarker("SEVERE"), "An exception occurred while polling Telegram.", e);
-                    running.set(false);
                 }
             }
         }
@@ -588,7 +587,7 @@ abstract public class TelegramBot {
             GetUpdatesRequest request = new GetUpdatesRequest(optionalArgs);
 
             List<Update> updates = requestExecutor.execute(api, request).getResult();
-            if (updates.size() > 0) {
+            if (updates != null && updates.size() > 0) {
                 List<Updatable> newUpdates = processUpdates(updates);
                 notifyNewUpdates(newUpdates);
             }
