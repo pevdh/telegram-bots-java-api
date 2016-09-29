@@ -17,6 +17,9 @@ public class Update extends TelegramType {
     @JsonProperty("message")
     private Message message;
 
+    @JsonProperty("edited_message")
+    private Message editedMessage;
+
     @JsonProperty("callback_query")
     private CallbackQuery callbackQuery;
 
@@ -36,6 +39,15 @@ public class Update extends TelegramType {
      */
     public Message getMessage() {
         return message;
+    }
+
+    /**
+     * <i>Optional.</i>
+     *
+     * @return New version of a message that is known to the bot and was edited
+     */
+    public Message getEditedMessage() {
+        return editedMessage;
     }
 
     /**

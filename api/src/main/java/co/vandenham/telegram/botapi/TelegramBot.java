@@ -598,7 +598,9 @@ abstract public class TelegramBot {
             for (Update update : updates) {
                 if (update.getUpdateId() > lastUpdateId)
                     lastUpdateId = update.getUpdateId();
-                if (update.getMessage() != null)
+                if (update.getEditedMessage() != null)
+                    objects.add(update.getEditedMessage());
+                else if (update.getMessage() != null)
                     objects.add(update.getMessage());
                 if (update.getCallbackQuery() != null)
                     objects.add(update.getCallbackQuery());

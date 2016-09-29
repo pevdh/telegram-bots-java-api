@@ -22,6 +22,9 @@ public class Message extends TelegramType implements Updatable {
     @JsonProperty("date")
     private int date;
 
+    @JsonProperty("edit_date")
+    private int editDate;
+
     @JsonProperty("chat")
     private Chat chat;
 
@@ -100,6 +103,13 @@ public class Message extends TelegramType implements Updatable {
      */
     public int getDate() {
         return date;
+    }
+
+    /**
+     * @return Date the message was last edited in Unix time
+     */
+    public int getEditDate() {
+        return editDate;
     }
 
     /**
