@@ -1,26 +1,29 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a chat.
  * This might be a chat with a {@link User} or a {@link GroupChat}
  */
-public class Chat {
+public class Chat extends TelegramType {
 
-    @SerializedName("id")
+    @JsonProperty("id")
     private int id;
 
-    @SerializedName("first_name")
+    @JsonProperty("type")
+    private String type;
+
+    @JsonProperty("first_name")
     private String firstName;
 
-    @SerializedName("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
-    @SerializedName("username")
+    @JsonProperty("username")
     private String username;
 
-    @SerializedName("title")
+    @JsonProperty("title")
     private String title;
 
     /**
@@ -42,6 +45,13 @@ public class Chat {
      */
     public int getId() {
         return id;
+    }
+
+    /**
+     * @return Type of chat, can be either “private”, “group”, “supergroup” or “channel”
+     */
+    public String getType() {
+        return type;
     }
 
     /**
@@ -68,9 +78,14 @@ public class Chat {
 
     @Override
     public String toString() {
-        if (isUser())
-            return "Chat {" + asUser().toString() + "}";
-        else
-            return "Chat {" + asGroupChat().toString() + "}";
+        final StringBuilder sb = new StringBuilder("Chat{");
+        sb.append("id=").append(id);
+        sb.append(", type=").append(type);
+        sb.append(", title=").append(title);
+        sb.append(", username=").append(username);
+        sb.append(", first_name=").append(firstName);
+        sb.append(", last_name=").append(lastName);
+        sb.append('}');
+        return sb.toString();
     }
 }

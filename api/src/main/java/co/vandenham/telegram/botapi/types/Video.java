@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a video file.
@@ -9,27 +9,27 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#video">https://core.telegram.org/bots/api#video</a>
  */
-public class Video {
+public class Video extends TelegramType {
 
-    @SerializedName("file_id")
+    @JsonProperty("file_id")
     private String fileId;
 
-    @SerializedName("width")
+    @JsonProperty("width")
     private int width;
 
-    @SerializedName("height")
+    @JsonProperty("height")
     private int height;
 
-    @SerializedName("duration")
+    @JsonProperty("duration")
     private int duration;
 
-    @SerializedName("thumb")
+    @JsonProperty("thumb")
     private PhotoSize thumb;
 
-    @SerializedName("mime_type")
+    @JsonProperty("mime_type")
     private String mimeType;
 
-    @SerializedName("file_size")
+    @JsonProperty("file_size")
     private int fileSize;
 
     /**

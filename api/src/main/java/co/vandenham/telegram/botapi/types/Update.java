@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents an incoming update.
@@ -9,13 +9,19 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#update">https://core.telegram.org/bots/api#update</a>
  */
-public class Update {
+public class Update extends TelegramType {
 
-    @SerializedName("update_id")
+    @JsonProperty("update_id")
     private int updateId;
 
-    @SerializedName("message")
+    @JsonProperty("message")
     private Message message;
+
+    @JsonProperty("edited_message")
+    private Message editedMessage;
+
+    @JsonProperty("callback_query")
+    private CallbackQuery callbackQuery;
 
     /**
      * @return The update‘s unique identifier.
@@ -34,4 +40,23 @@ public class Update {
     public Message getMessage() {
         return message;
     }
+
+    /**
+     * <i>Optional.</i>
+     *
+     * @return New version of a message that is known to the bot and was edited
+     */
+    public Message getEditedMessage() {
+        return editedMessage;
+    }
+
+    /**
+     * <i>Optional.</i>
+     *
+     * @return New incoming callback query of any kind — message or inline
+     */
+    public CallbackQuery getCallbackQuery() {
+        return callbackQuery;
+    }
+
 }

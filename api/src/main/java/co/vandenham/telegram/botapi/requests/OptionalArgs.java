@@ -1,6 +1,7 @@
 package co.vandenham.telegram.botapi.requests;
 
 import co.vandenham.telegram.botapi.types.ReplyMarkup;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,11 @@ public class OptionalArgs {
             putInt("duration", duration);
 
         if (replyMarkup != null)
-            options.put("reply_markup", replyMarkup.serialize());
+            try {
+                options.put("reply_markup", replyMarkup.serialize());
+            } catch (JsonProcessingException e) {
+                throw new ApiException("OptionalArgs", e);
+            }
 
         if (caption != null)
             options.put("caption", caption);

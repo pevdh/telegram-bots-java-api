@@ -1,7 +1,12 @@
 package co.vandenham.telegram.botapi.requests;
 
+import co.vandenham.telegram.botapi.TelegramBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -12,6 +17,8 @@ import java.util.Scanner;
 
 
 public final class TelegramApi {
+    private static final Logger logger = LoggerFactory.getLogger(TelegramApi.class);
+
 
     public static final String API_URL = "https://api.telegram.org/bot%s/%s";
     private final String token;
@@ -32,10 +39,27 @@ public final class TelegramApi {
         return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
     }
 
-    private static String readAll(InputStream input) {
-        Scanner scanner = new Scanner(input);
-        scanner.useDelimiter("\\A");
-        return scanner.hasNext() ? scanner.next() : null;
+    private static String readAll(HttpURLConnection connection) throws IOException {
+        InputStream input = null;
+        try {
+            input = connection.getInputStream();
+            Scanner scanner = new Scanner(input);
+            scanner.useDelimiter("\\A");
+            return scanner.hasNext() ? scanner.next() : null;
+        } catch (IOException e) {
+            logger.error("HTTP Request failed", e);
+            try {
+                logger.debug("Failed connection status: {} {}", connection.getResponseCode(), connection.getResponseMessage());
+                if (logger.isTraceEnabled()) {
+                    Scanner scanner = new Scanner(connection.getErrorStream());
+                    scanner.useDelimiter("\\A");
+                    if (scanner.hasNext()) {
+                        logger.trace("Failed connection body: {}", scanner.next());
+                    }
+                }
+            } catch (IOException e1) {}
+            throw e;
+        }
     }
 
     public String makeGetRequest(String method) {
@@ -43,18 +67,18 @@ public final class TelegramApi {
             HttpsURLConnection connection = buildConnection(method);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
-
-            return readAll(connection.getInputStream());
+            return readAll(connection);
         } catch (IOException exception) {
             throw new ApiException(method, exception);
         }
     }
 
     public String makePostRequest(String method, Map<String, String> arguments) {
+        HttpsURLConnection connection = null;
         try {
             String query = createQueryString(arguments);
 
-            HttpsURLConnection connection = buildConnection(method);
+            connection = buildConnection(method);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-length", String.valueOf(query.length()));
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -67,7 +91,7 @@ public final class TelegramApi {
             output.writeBytes(query);
             output.close();
 
-            return readAll(connection.getInputStream());
+            return readAll(connection);
         } catch (IOException exception) {
             throw new ApiException(method, exception);
         }
@@ -84,6 +108,7 @@ public final class TelegramApi {
 
             return multipartUtility.finish();
         } catch (IOException e) {
+            logger.error("HTTP Multipart Request failed field:{} file:{} args:{}", fieldName, uploadFile, args, e);
             throw new ApiException(method, e);
         }
     }
@@ -92,6 +117,7 @@ public final class TelegramApi {
         try {
             return (HttpsURLConnection) new URL(String.format(API_URL, token, methodName)).openConnection();
         } catch (IOException e) {
+            logger.error("HTTP Connection failed to {}", methodName, e);
             throw new ApiException(methodName, e);
         }
     }
@@ -211,7 +237,7 @@ public final class TelegramApi {
             writer.close();
 
             outputStream.close();
-            return readAll(httpConn.getInputStream());
+            return readAll(httpConn);
         }
     }
 

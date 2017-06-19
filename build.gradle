@@ -1,12 +1,42 @@
 project.ext.set("projectName", "TelegramBots4Java")
 
+
+buildscript {
+    repositories {
+        jcenter()
+        dependencies {
+            classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.0.0')
+        }
+    }
+}
+
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: "com.jfrog.artifactory"
 
     repositories {
         mavenCentral()
     }
+}
 
+artifactory {
+    publish {
+        contextUrl = 'https://shepherd.jfrog.io/shepherd/'
+        repository {
+            repoKey = "libs-release-local"
+            username = System.getenv('ARTIFACTORY_USER')
+            password = System.getenv('ARTIFACTORY_PWD')
+        }
+    }
+
+    publish {
+        contextUrl = 'https://shepherd.jfrog.io/shepherd/'
+        repository {
+            repoKey = "libs-snapshot-local"
+            username = System.getenv('ARTIFACTORY_USER')
+            password = System.getenv('ARTIFACTORY_PWD')
+        }
+    }
 }

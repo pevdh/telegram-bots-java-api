@@ -1,0 +1,29 @@
+machine:
+  environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+
+dependencies:
+  cache_directories:
+    - "~/.sbt"
+    - "~/.m2"
+    - "~/.ivy2"
+
+compile:
+  override:
+    - ./gradlew :api:compileJava
+    - ./gradlew :EchoBot:compileJava
+    - ./gradlew :GMTBot:compileJava
+
+test:
+  override:
+    - ./gradlew :api:Test
+    - ./gradlew :EchoBot:Test
+    - ./gradlew :GMTBot:Test
+
+  post:
+    - ./gradlew :api:jar
+    - cp api/build/libs/*.jar $CIRCLE_ARTIFACTS
+    - cp EchoBot/build/libs/*.jar $CIRCLE_ARTIFACTS
+    - cp GMTBot/build/libs/*.jar $CIRCLE_ARTIFACTS
+    # deploy the jar into Artifactory
+    - ./gradlew artifactoryPublish

@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a sticker.
@@ -9,21 +9,21 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#sticker">https://core.telegram.org/bots/api#sticker</a>
  */
-public class Sticker {
+public class Sticker extends TelegramType {
 
-    @SerializedName("file_id")
+    @JsonProperty("file_id")
     private String fileId;
 
-    @SerializedName("width")
+    @JsonProperty("width")
     private int width;
 
-    @SerializedName("height")
+    @JsonProperty("height")
     private int height;
 
-    @SerializedName("thumb")
+    @JsonProperty("thumb")
     private PhotoSize thumb;
 
-    @SerializedName("file_size")
+    @JsonProperty("file_size")
     private int fileSize;
 
     /**
