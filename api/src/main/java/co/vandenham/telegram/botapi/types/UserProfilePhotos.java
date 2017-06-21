@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -9,12 +9,12 @@ import java.util.List;
  *
  * @see <a href="https://core.telegram.org/bots/api#userprofilephotos">https://core.telegram.org/bots/api#userprofilephotos</a>
  */
-public class UserProfilePhotos {
+public class UserProfilePhotos extends TelegramType {
 
-    @SerializedName("total_count")
+    @JsonProperty("total_count")
     private int totalCount;
 
-    @SerializedName("photos")
+    @JsonProperty("photos")
     private List<List<PhotoSize>> photos;
 
     /**

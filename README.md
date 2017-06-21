@@ -19,6 +19,24 @@ $ ./gradlew :api:jar
 ```
 You'll find the .jar file in the api/build/libs directory.
 
+- Deploy to local repo
+
+```
+$ ./gradlew publishToMavenLocal
+
+```
+
+Results in artifacts created by modules EchoBot, GMTBot, and api to be published into the local maven repository.
+
+- Deploy to Artifactory
+```
+$ ./gradlew artifactoryPublish
+
+```
+Results in artifacts created by modules EchoBot, GMTBot, and api to be published into the Artifactory repository.
+
+Note: CircleCI does the same to publish the artifacts at the end of a successful test phase.
+
 ## How to use
 
 ### A simple echo bot

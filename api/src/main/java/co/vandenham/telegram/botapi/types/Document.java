@@ -1,6 +1,6 @@
 package co.vandenham.telegram.botapi.types;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This object represents a general file (as opposed to photos ({@link PhotoSize}) and audio ({@link Audio}) files).
@@ -9,21 +9,21 @@ import com.google.gson.annotations.SerializedName;
  *
  * @see <a href="https://core.telegram.org/bots/api#document>https://core.telegram.org/bots/api#document</a>
  */
-public class Document {
+public class Document extends TelegramType {
 
-    @SerializedName("file_id")
+    @JsonProperty("file_id")
     private String fileId;
 
-    @SerializedName("thumb")
+    @JsonProperty("thumb")
     private PhotoSize thumb;
 
-    @SerializedName("file_name")
+    @JsonProperty("file_name")
     private String fileName;
 
-    @SerializedName("mime_type")
+    @JsonProperty("mime_type")
     private String mimeType;
 
-    @SerializedName("file_size")
+    @JsonProperty("file_size")
     private int fileSize;
 
     /**
